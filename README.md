@@ -11,4 +11,12 @@
 
 ```
 
+# Initialize 
 
+```
+$ git clone https://github.com/8bitgeek/briscits-bsp.git
+$ cd briscits-bsp
+$ git submodule init
+$ git submodule update
+$ make -f bsp/generic-stm32f746/Makefile
+```

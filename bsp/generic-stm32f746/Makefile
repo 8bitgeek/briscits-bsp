@@ -61,6 +61,7 @@ LFLAGS += --specs=nosys.specs
 LFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 LFLAGS += -Wl,--gc-sections
 LFLAGS += -T$(CHIP)/linker.ld
+LFLAGS += briscits/libbrisc.a
 
 # xprintf
 CFLAGS += -DXPRINTF_USE_XFUNC_OUT=1
@@ -76,7 +77,7 @@ INCLUDE += -I $(CPU_COMMON)
 INCLUDE += -I $(CHIP)
 INCLUDE += -I $(CHIP_COMMON)
 INCLUDE += -I $(CHIP_FAMILY)
-INCLUDE += -I src
+INCLUDE += -I briscits/inc
 INCLUDE += -I lib
 
 # CPU and CHIP Source files.
@@ -94,12 +95,12 @@ C_SRC   += $(CPU)/cpu.c
 C_SRC  += bsp/$(BOARD)/brisc_board.c
 
 # BRISCIT Source Files
-C_SRC  += src/brisc_sched.c
-C_SRC  += src/brisc_swi.c
-C_SRC  += src/brisc_irq.c
-C_SRC  += src/brisc_thread.c
-C_SRC  += src/brisc_mutex.c
-C_SRC  += lib/brisc_delay.c
+# C_SRC  += src/brisc_sched.c
+# C_SRC  += src/brisc_swi.c
+# C_SRC  += src/brisc_irq.c
+# C_SRC  += src/brisc_thread.c
+# C_SRC  += src/brisc_mutex.c
+# C_SRC  += lib/brisc_delay.c
 
 # Object files to build.
 OBJS  = $(AS_SRC:.S=.o)
