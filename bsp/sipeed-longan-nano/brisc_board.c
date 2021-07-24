@@ -2,6 +2,7 @@
 #include <brisc_thread.h>
 #include <rgb_led.h>
 #include <xprintf.h>
+#include <gd32vf103_usart.h>
 
 static unsigned char usart_in(void);
 static void usart_out(unsigned char ch);

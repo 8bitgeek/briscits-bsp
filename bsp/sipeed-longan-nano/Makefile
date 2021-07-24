@@ -4,13 +4,8 @@ TARGET=$(BOARD)
 CFLAGS += -DHXTAL_VALUE=8000000
 CFLAGS += -DBRISC_THREAD_MAX=4
 
-# OpenOCD
-OPENOCD=riscv-openocd
-OPENOCD_JTAG_CFG=openocd/olimex-jtag-tiny.cfg 
-OPENOCD_TARGET_CFG=openocd/openocd_gd32vf103.cfg
-
 # CPU
-CPU_COMMON=cpu/riscv
+CPU_COMMON=briscits/cpu/riscv
 CPU=$(CPU_COMMON)/RV32IMAC
 
 # Chip
@@ -19,10 +14,10 @@ CHIP_COMMON=chip/$(CHIP_FAMILY)
 CHIP=$(CHIP_COMMON)/gd32vf103xb
 
 # GCC toolchain programs.
-CC = riscv32-unknown-elf-gcc
-OC = riscv32-unknown-elf-objcopy
-OS = riscv32-unknown-elf-size
-GDB = riscv32-unknown-elf-gdb
+CC = ${BRISC_GCC}-gcc
+OC = ${BRISC_GCC}-objcopy
+OS = ${BRISC_GCC}-size
+GDB = ${BRISC_GCC}-gdb
 
 # Assembly directives.
 ASFLAGS += -c
@@ -37,8 +32,6 @@ ASFLAGS += -mcmodel=medlow
 CFLAGS += -c
 CFLAGS += -Wall
 CFLAGS += -Os
-#CFLAGS += -g -Os
-#CFLAGS += -ggdb
 CFLAGS += -fmessage-length=0
 CFLAGS += --specs=nosys.specs
 CFLAGS += -march=rv32imac
@@ -46,12 +39,10 @@ CFLAGS += -mabi=ilp32
 CFLAGS += -mcmodel=medlow
 
 # Linker directives.
-# Linker directives.
 LFLAGS +=  -Xlinker -Map=$(TARGET).map 
 LFLAGS += -Wall
 LFLAGS += -Wl,--no-relax
 LFLAGS += -Wl,--gc-sections
-#LFLAGS += -nostdlib
 LFLAGS += -nostartfiles
 LFLAGS += -lc
 LFLAGS += -lgcc
@@ -62,65 +53,6 @@ LFLAGS += -mabi=ilp32
 LFLAGS += -mcmodel=medlow
 LFLAGS += -Wl,--gc-sections
 LFLAGS += -T$(CHIP)/linker.ld
-
-# Firmware Library 
-FIRMWARE_DIR=bsp/lib/GD32VF103_Firmware_Library/Firmware
-INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_standard_peripheral
-INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Include
-INCLUDE += -I $(FIRMWARE_DIR)/RISCV/drivers
-INCLUDE += -I $(FIRMWARE_DIR)/RISCV
-
-# peripheral
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/system_gd32vf103.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_adc.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_bkp.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_can.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_crc.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_dac.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_dbg.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_dma.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_eclic.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_exmc.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_exti.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_fmc.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_fwdgt.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_gpio.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_i2c.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_pmu.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_rcu.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_rtc.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_spi.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_timer.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_usart.c
-C_SRC  += $(FIRMWARE_DIR)/GD32VF103_standard_peripheral/Source/gd32vf103_wwdgt.c
-
-# usb
-# INCLUDE += -I $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Include
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_core.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_dev.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usb_host.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usbd_int.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/drv_usbh_int.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbd_core.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbd_enum.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbd_transc.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_core.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_enum.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_pipe.c 
-# C_SRC  += $(FIRMWARE_DIR)/GD32VF103_usbfs_driver/Source/usbh_transc.c 
-
-# stubs
-# INCLUDE += -I $(FIRMWARE_DIR)/RISCV/stubs
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/_exit.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/close.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/fstat.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/isatty.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/kill.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/lseek.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/read.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/sbrk.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/write_hex.c
-# C_SRC  += $(FIRMWARE_DIR)/RISCV/stubs/write.c
 
 # xprintf
 CFLAGS += -DXPRINTF_USE_XFUNC_OUT=1
@@ -135,7 +67,6 @@ INCLUDE += -I $(CPU)
 INCLUDE += -I $(CPU_COMMON)
 INCLUDE += -I $(CHIP)
 INCLUDE += -I $(CHIP_COMMON)
-INCLUDE += -I src
 INCLUDE += -I lib
 
 # CPU and CHIP Source files.
@@ -143,6 +74,11 @@ AS_SRC  += $(CHIP)/vectors.S
 AS_SRC  += $(CHIP_COMMON)/boot.S
 C_SRC  += $(CHIP_COMMON)/bss_init.c
 C_SRC  += $(CHIP_COMMON)/n200_func.c
+C_SRC  += $(CHIP_COMMON)/system_gd32vf103.c
+C_SRC  += $(CHIP_COMMON)/gd32vf103_gpio.c
+C_SRC  += $(CHIP_COMMON)/gd32vf103_rcu.c
+C_SRC  += $(CHIP_COMMON)/gd32vf103_spi.c
+C_SRC  += $(CHIP_COMMON)/gd32vf103_usart.c
 C_SRC  += $(CPU)/cpu.c
 
 # BOARD Source files
@@ -151,12 +87,8 @@ C_SRC  += bsp/$(BOARD)/brisc_board.c
 C_SRC  += bsp/$(BOARD)/brisc_timer.c
 C_SRC  += bsp/$(BOARD)/rgb_led.c
 
-# BRISCIT Source Files
-C_SRC  += src/brisc_sched.c
-C_SRC  += src/brisc_irq.c
-C_SRC  += src/brisc_thread.c
-C_SRC  += src/brisc_mutex.c
-C_SRC  += lib/brisc_delay.c
+# BRISCIT Include Files
+INCLUDE += -I briscits/inc
 
 # Object files to build.
 OBJS  = $(AS_SRC:.S=.o)
@@ -176,7 +108,7 @@ all: $(TARGET).bin
 
 # Rule to create an ELF file from the compiled object files.
 $(TARGET).elf: $(OBJS)
-	$(CC) $^ $(LFLAGS) -o $@
+	$(CC) $^ $(LFLAGS) briscits/libbrisc.a -o $@
 
 # Rule to create a raw binary file from an ELF file.
 $(TARGET).bin: $(TARGET).elf

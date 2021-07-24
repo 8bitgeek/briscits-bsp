@@ -19,10 +19,10 @@ CHIP=$(CHIP_COMMON)/stm32f746xe
 CFLAGS += -DBRISC_THREAD_MAX=4 -DARM_FVP_LAZY_STACKING -DHSE_VALUE=8000000
 
 # GCC toolchain programs.
-CC = arm-none-eabi-gcc
-OC = arm-none-eabi-objcopy
-OS = arm-none-eabi-size
-GDB = arm-none-eabi-gdb
+CC = ${BRISC_GCC}-gcc
+OC = ${BRISC_GCC}-objcopy
+OS = ${BRISC_GCC}-size
+GDB = ${BRISC_GCC}-gdb
 
 # OpenOCD
 OPENOCD=openocd
