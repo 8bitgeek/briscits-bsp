@@ -1,6 +1,5 @@
 #include <brisc_thread.h>
 #include <brisc_delay.h>
-#include <brisc_swi.h>
 #include <string.h>
 
 #define EVER            ;;
@@ -86,9 +85,6 @@ static void run_main(void* arg)
         {
             app_state.main_count = app_state.red_count + app_state.green_count + app_state.blue_count;
             timeout_start=b_thread_systick();
-
-            brisc_swi(BRISC_SWI_NOP,(void*)0x08000000);
-
         }
         b_thread_yield();
     }

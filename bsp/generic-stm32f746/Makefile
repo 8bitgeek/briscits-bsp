@@ -7,16 +7,8 @@ MCU_FPU 		= fpv4-sp-d16
 BOARD=generic-stm32f746
 TARGET=$(BOARD)
 
-CFLAGS += -DBRISC_THREAD_MAX=4 -DARM_FVP_LAZY_STACKING -DHSE_VALUE=8000000
-
-# OpenOCD
-OPENOCD=openocd
-OPENOCD_LOCAL_CFG=-f bsp/$(BOARD)/openocd-local.cfg
-#OPENOCD_JTAG_CFG=-f interface/stlink-v2.cfg
-#OPENOCD_TARGET_CFG=-f target/stm32f7x.cfg
-
 # CPU
-CPU_COMMON=cpu/arm
+CPU_COMMON=briscits/cpu/arm
 CPU=$(CPU_COMMON)/cortex-m7
 
 # Chip
@@ -24,11 +16,17 @@ CHIP_FAMILY=chip/stm32
 CHIP_COMMON=$(CHIP_FAMILY)/f7
 CHIP=$(CHIP_COMMON)/stm32f746xe
 
+CFLAGS += -DBRISC_THREAD_MAX=4 -DARM_FVP_LAZY_STACKING -DHSE_VALUE=8000000
+
 # GCC toolchain programs.
 CC = arm-none-eabi-gcc
 OC = arm-none-eabi-objcopy
 OS = arm-none-eabi-size
 GDB = arm-none-eabi-gdb
+
+# OpenOCD
+OPENOCD=openocd
+OPENOCD_LOCAL_CFG=-f bsp/$(BOARD)/openocd-local.cfg
 
 # Assembly directives.
 ASFLAGS += -c
@@ -40,19 +38,14 @@ ASFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork
 CFLAGS += -DSTM32F746xx
 CFLAGS += -c
 CFLAGS += -Wall
-# CFLAGS += -Os
-# CFLAGS += -g -Os
 CFLAGS += -ggdb
 CFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 
-
-# Linker directives.
 # Linker directives.
 LFLAGS +=  -Xlinker -Map=$(TARGET).map 
 LFLAGS += -Wall
 LFLAGS += -Wl,--no-relax
 LFLAGS += -Wl,--gc-sections
-#LFLAGS += -nostdlib
 LFLAGS += -nostartfiles
 LFLAGS += -lc
 LFLAGS += -lgcc
@@ -61,7 +54,6 @@ LFLAGS += --specs=nosys.specs
 LFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 LFLAGS += -Wl,--gc-sections
 LFLAGS += -T$(CHIP)/linker.ld
-LFLAGS += briscits/libbrisc.a
 
 # xprintf
 CFLAGS += -DXPRINTF_USE_XFUNC_OUT=1
@@ -77,7 +69,6 @@ INCLUDE += -I $(CPU_COMMON)
 INCLUDE += -I $(CHIP)
 INCLUDE += -I $(CHIP_COMMON)
 INCLUDE += -I $(CHIP_FAMILY)
-INCLUDE += -I briscits/inc
 INCLUDE += -I lib
 
 # CPU and CHIP Source files.
@@ -88,19 +79,12 @@ C_SRC  	+= $(CHIP_COMMON)/system_stm32f7xx.c
 C_SRC  	+= $(CHIP_COMMON)/systick_init.c
 C_SRC  	+= $(CHIP_FAMILY)/bss_init.c
 C_SRC  	+= $(CHIP_FAMILY)/cpp_init.c
-C_SRC   += $(CPU)/cpu.c
 
 # BOARD Source files
-# C_SRC  += bsp/$(BOARD)/main.c
 C_SRC  += bsp/$(BOARD)/brisc_board.c
 
-# BRISCIT Source Files
-# C_SRC  += src/brisc_sched.c
-# C_SRC  += src/brisc_swi.c
-# C_SRC  += src/brisc_irq.c
-# C_SRC  += src/brisc_thread.c
-# C_SRC  += src/brisc_mutex.c
-# C_SRC  += lib/brisc_delay.c
+# BRISCIT Include Files
+INCLUDE += -I briscits/inc
 
 # Object files to build.
 OBJS  = $(AS_SRC:.S=.o)
@@ -122,7 +106,7 @@ all: $(TARGET).bin
 
 # Rule to create an ELF file from the compiled object files.
 $(TARGET).elf:  bsp/$(BOARD)/main.o $(OBJS)
-	$(CC) $^ $(LFLAGS) -o $@
+	$(CC) $^ $(LFLAGS) briscits/libbrisc.a -o $@
 
 # Rule to create a raw binary file from an ELF file.
 $(TARGET).bin: $(TARGET).elf
