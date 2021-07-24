@@ -14,10 +14,10 @@
 # Initialize 
 
 ```
-$ git clone https://github.com/8bitgeek/briscits-bsp.git
-$ cd briscits-bsp
-$ git submodule init
-$ git submodule update
+git clone https://github.com/8bitgeek/briscits-bsp.git
+cd briscits-bsp
+git submodule init
+git submodule update
 ```
 
 # Environment Setup
@@ -29,17 +29,19 @@ Prior to compiling for a particular CPU target, some environment variables need 
 
 ## RISC-V
 ```
-$ export BRISC_CPU=riscv/RV32IMAC
-$ export BRISC_GCC=/opt/riscv-gcc/bin/riscv32-unknown-elf
-
-$ make -f bsp/sipeed-longan-nano/Makefile
-
+export BRISC_CPU=riscv/RV32IMAC
+export BRISC_GCC=/opt/riscv/bin/riscv32-unknown-elf
+cd briscits
+make
+cd ..
+make -f bsp/sipeed-longan-nano/Makefile
 ```
 ## Cortex-M7
 ```
-$ export BRISC_CPU=arm/cortex-m7
-$ export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
-
-$ make -f bsp/generic-stm32f746/Makefile
-
+export BRISC_CPU=arm/cortex-m7
+export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
+cd briscits
+make
+cd ..
+make -f bsp/generic-stm32f746/Makefile
 ```
