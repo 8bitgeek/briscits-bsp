@@ -45,3 +45,9 @@ make
 cd ..
 make -f bsp/generic-stm32f746/Makefile
 ```
+# OpenOCD
+
+## Using PINE64 USB JTAG with GD32VF103 MCU
+```
+openocd -c "adapter speed 1000" -f interface/ftdi/um232h.cfg -f target/gd32vf103.cfg
+```
