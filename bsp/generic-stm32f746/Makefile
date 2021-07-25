@@ -1,3 +1,5 @@
+TARGET=main
+
 # Board
 MCU_CHIP	 	= stm32f7xx
 MCU_CORE     	= cortex-m7
@@ -5,7 +7,6 @@ MCU_FLOAT    	= softfp
 MCU_FPU 		= fpv4-sp-d16
 
 BOARD=generic-stm32f746
-TARGET=$(BOARD)
 
 # CPU
 CPU_COMMON=briscits/cpu/arm
@@ -38,7 +39,7 @@ ASFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork
 CFLAGS += -DSTM32F746xx
 CFLAGS += -c
 CFLAGS += -Wall
-CFLAGS += -ggdb
+CFLAGS += ${BRISC_CFLAGS}
 CFLAGS += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT) -mfpu=$(MCU_FPU)
 
 # Linker directives.

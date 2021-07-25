@@ -11,6 +11,25 @@
 
 ```
 
+# Prerequisite 
+
+## RISCV OpenOCD
+
+### Git Repository
+https://github.com/riscv/riscv-openocd
+
+### Pre-compiled binary for 64-bit ARM (aarch64) Linux
+[riscv-openod-0.00.0-aarch64.tar.gz](http://8bitgeek.net/uploads/riscv-openod-0.00.0-aarch64.tar.gz)
+
+## RISCV GCC
+
+### Git Repository
+https://github.com/riscv/riscv-gnu-toolchain
+
+### Pre-compiled binary for 64-bit ARM (aarch64) Linux
+`./configure --prefix=/opt/riscv --with-arch=rv32i --with-abi=ilp32 --enable-multilib`
+[riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz](http://8bitgeek.net/uploads/riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz)
+
 # Initialize 
 
 ```
@@ -26,28 +45,56 @@ Prior to compiling for a particular CPU target, some environment variables need 
 
 * BRISC_CPU should reference one of the CPU support packages under the cpu/ folder.
 * BRISC_GCC should contain the 'gcc' compiler prefix.
+* BRISC_CFLAGS should contains compiler flags for instance "-ggdb" or "-Os"
 
-## RISC-V
+## RISC-V (debug)
 ```
 export BRISC_CPU=riscv/RV32IMAC
-export BRISC_GCC=/opt/riscv/bin/riscv32-unknown-elf
-cd briscits
-make
-cd ..
-make -f bsp/sipeed-longan-nano/Makefile
+export BRISC_GCC=riscv64-unknown-elf
 ```
-## Cortex-M7
+## Cortex-M7 (debug)
 ```
 export BRISC_CPU=arm/cortex-m7
-export BRISC_GCC=/opt/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi
+export BRISC_GCC=arm-none-eabi
+```
+## Debug
+```
+export BRISC_CFLAGS=-ggdb
+```
+## Release
+```
+export BRISC_CFLAGS=-Os
+```
+
+# Make BRISCITS scheduler (libbrisc.a)
+```
 cd briscits
 make
 cd ..
+```
+
+## SiPEED Longan Nano (GD32VF103CBT6) 32-bit RISCV RV32IMAC
+```
+make -f bsp/sipeed-longan-nano/Makefile
+```
+## WaveShare (SSTM332F746) 32-bit Cortex-M7
+```
 make -f bsp/generic-stm32f746/Makefile
 ```
-# OpenOCD
+# OpenOCD RISCV
 
 ## Using PINE64 USB JTAG with GD32VF103 MCU
 ```
-openocd -c "adapter speed 1000" -f interface/ftdi/um232h.cfg -f target/gd32vf103.cfg
+/opt/riscv-openocd/bin/openocd -c "adapter speed 1000" \
+    -f /opt/riscv-openocd/share/openocd/scripts/interface/ftdi/um232h.cfg \
+    -f /opt/riscv-openocd/share/openocd/scripts/target/gd32vf103.cfg
+```
+
+# Using GDB on RISCV target
+```
+riscv64-unknown-elf-gdb ./main.elf
+target extended-remote localhost:3333
+load main.elf
+break main
+continue
 ```

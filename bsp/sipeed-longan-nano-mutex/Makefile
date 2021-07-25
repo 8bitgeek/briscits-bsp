@@ -1,6 +1,7 @@
+TARGET=main
+
 # Board
 BOARD=sipeed-longan-nano-mutex
-TARGET=$(BOARD)
 CFLAGS += -DHXTAL_VALUE=8000000
 CFLAGS += -DBRISC_THREAD_MAX=4
 
@@ -36,9 +37,7 @@ ASFLAGS += -mcmodel=medlow
 # C compilation directives
 CFLAGS += -c
 CFLAGS += -Wall
-CFLAGS += -Os
-#CFLAGS += -g -Os
-#CFLAGS += -ggdb
+CFLAGS += ${BRISC_CFLAGS}
 CFLAGS += -fmessage-length=0
 CFLAGS += --specs=nosys.specs
 CFLAGS += -march=rv32imac
