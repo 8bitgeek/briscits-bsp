@@ -1,6 +1,6 @@
 #!/bin/bash
 export BRISC_CPU=riscv/RV32IMAC
-export BRISC_GCC=riscv64-unknown-elf
+export BRISC_GCC=riscv32-unknown-elf
 export BRISC_CFLAGS=$2
 cd briscits
 make

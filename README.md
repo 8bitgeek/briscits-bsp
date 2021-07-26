@@ -11,6 +11,10 @@
 
 ```
 
+# BRISCITS
+
+This is a Board Support project for [BRISCITS](https://github.com/8bitgeek/briscits-bsp).
+
 # Prerequisite 
 
 ## RISCV OpenOCD
@@ -51,7 +55,7 @@ Prior to compiling for a particular CPU target, some environment variables need 
 ## RISC-V (debug)
 ```
 export BRISC_CPU=riscv/RV32IMAC
-export BRISC_GCC=riscv64-unknown-elf
+export BRISC_GCC=riscv32-unknown-elf
 ```
 ## Cortex-M7 (debug)
 ```
