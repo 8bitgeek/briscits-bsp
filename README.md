@@ -22,7 +22,7 @@ This is a Board Support project for [BRISCITS](https://github.com/8bitgeek/brisc
 ### Git Repository
 https://github.com/riscv/riscv-openocd
 
-### Pre-compiled binary for 64-bit ARM (aarch64) Linux
+### Pre-compiled binary for 64-bit ARM (aarch64) Linux Host
 [riscv-openod-0.00.0-aarch64.tar.gz](http://8bitgeek.net/uploads/riscv-openod-0.00.0-aarch64.tar.gz)
 
 ## RISCV GCC
@@ -30,7 +30,7 @@ https://github.com/riscv/riscv-openocd
 ### Git Repository
 https://github.com/riscv/riscv-gnu-toolchain
 
-### Pre-compiled binary for 64-bit ARM (aarch64) Linux
+### Pre-compiled binary for 64-bit ARM (aarch64) Linux Host
 `./configure --prefix=/opt/riscv --with-arch=rv32i --with-abi=ilp32 --enable-multilib`
 
 [riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz](http://8bitgeek.net/uploads/riscv32-unknown-elf-gcc-aarch64-11.1.0.tar.gz)
