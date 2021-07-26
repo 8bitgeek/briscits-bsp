@@ -98,7 +98,7 @@ make -f bsp/generic-stm32f746/Makefile
 
 ## Attach GDB on RISCV target
 ```
-riscv64-unknown-elf-gdb ./main.elf
+riscv32-unknown-elf-gdb ./main.elf
 target extended-remote localhost:3333
 load main.elf
 break main
