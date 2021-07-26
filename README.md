@@ -88,18 +88,27 @@ make -f bsp/generic-stm32f746/Makefile
 ```
 # OpenOCD RISCV
 
-## Using PINE64 USB JTAG with GD32VF103 MCU
+## Using PINE64 USB JTAG with GD32VF103 MCU and GDB
+
 ```
 /opt/riscv-openocd/bin/openocd -c "adapter speed 1000" \
     -f /opt/riscv-openocd/share/openocd/scripts/interface/ftdi/um232h.cfg \
     -f /opt/riscv-openocd/share/openocd/scripts/target/gd32vf103.cfg
 ```
 
-# Using GDB on RISCV target
+## Attach GDB on RISCV target
 ```
 riscv64-unknown-elf-gdb ./main.elf
 target extended-remote localhost:3333
 load main.elf
 break main
 continue
+```
+
+## Flash GD32VF103 MCU
+```
+/opt/riscv-openocd/bin/openocd -c "adapter speed 1000" \
+    -f /opt/riscv-openocd/share/openocd/scripts/interface/ftdi/um232h.cfg \
+    -f /opt/riscv-openocd/share/openocd/scripts/target/gd32vf103.cfg \
+    -c "program main.elf verify reset exit"
 ```
