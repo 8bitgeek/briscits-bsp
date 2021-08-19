@@ -20,24 +20,18 @@ OC = ${BRISC_GCC}-objcopy
 OS = ${BRISC_GCC}-size
 GDB = ${BRISC_GCC}-gdb
 
+include briscits/cpu/$(BRISC_CPU)/cflags.mk
+
 # Assembly directives.
 ASFLAGS += -c
-ASFLAGS += -O0
 ASFLAGS += -Wall
-ASFLAGS += -fmessage-length=0
 ASFLAGS += -march=rv32imac
-ASFLAGS += -mabi=ilp32
-ASFLAGS += -mcmodel=medlow
 
 # C compilation directives
 CFLAGS += -c
 CFLAGS += -Wall
 CFLAGS += ${BRISC_CFLAGS}
-CFLAGS += -fmessage-length=0
-CFLAGS += --specs=nosys.specs
 CFLAGS += -march=rv32imac
-CFLAGS += -mabi=ilp32
-CFLAGS += -mcmodel=medlow
 
 # Linker directives.
 LFLAGS +=  -Xlinker -Map=$(TARGET).map 
@@ -48,10 +42,7 @@ LFLAGS += -nostartfiles
 LFLAGS += -lc
 LFLAGS += -lgcc
 LFLAGS += -lm
-LFLAGS += --specs=nosys.specs
 LFLAGS += -march=rv32imac
-LFLAGS += -mabi=ilp32
-LFLAGS += -mcmodel=medlow
 LFLAGS += -Wl,--gc-sections
 LFLAGS += -T$(CHIP)/linker.ld
 

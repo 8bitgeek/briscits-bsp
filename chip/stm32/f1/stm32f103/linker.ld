@@ -31,29 +31,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-__main_stack_size__     = 0x0600;
-__process_stack_size__  = 0x0600;
+__main_stack_size__     = 0x0400;
+__process_stack_size__  = 0x0400;
 
 MEMORY
 {
-    flash   (rx)    : org = 0x08000000, len = 512k
-    dtcm    (rw)    : org = 0x20000000, len = 64k
-    ram     (rwx)   : org = 0x20010000, len = 256k
+    flash : org = 0x08000000, len = 128k
+    ram   : org = 0x20000000, len = 20k
 }
 
 __ram_start__           = ORIGIN(ram);
 __ram_size__            = LENGTH(ram);
 __ram_end__             = __ram_start__ + __ram_size__;
-
-/***************************************************************************/
-/* MICROAMP: Calculate __microamp_shared_ram__                             */
-/***************************************************************************/
-__microamp_page_size__      = 1K;
-__microamp_shared_ram__     = ORIGIN(dtcm);
-__microamp_shared_size__    = (ORIGIN(dtcm) + LENGTH(dtcm)) - 
-                                __microamp_shared_ram__;
-__microamp_pages__          = __microamp_shared_size__ /
-                                 __microamp_page_size__;
 
 SECTIONS
 {
