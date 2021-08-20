@@ -103,10 +103,10 @@ int main( void )
 {
     int delay = MAX_DELAY;
 
-    xprintf( "CLK = %f GHz\n", (float)board_clkfreq()/1000000000.0f );
-
     if ( (main_thread_handle  = b_thread_init( "main" )) >= 0 )
     {
+        xprintf( "CLK = %f GHz\n", (float)board_clkfreq()/1000000000.0f );
+
         if ( (red_thread_handle = b_thread_create( "red", run_red, &delay, red_stack, STACK_WORDS )) >= 0)
         {
             if ( (green_thread_handle = b_thread_create( "green", run_green, &delay, green_stack, STACK_WORDS )) >= 0)

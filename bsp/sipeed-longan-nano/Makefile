@@ -26,12 +26,14 @@ include briscits/cpu/$(BRISC_CPU)/cflags.mk
 ASFLAGS += -c
 ASFLAGS += -Wall
 ASFLAGS += -march=rv32imac
+ASFLAGS += -mabi=ilp32
 
 # C compilation directives
 CFLAGS += -c
 CFLAGS += -Wall
 CFLAGS += ${BRISC_CFLAGS}
 CFLAGS += -march=rv32imac
+CFLAGS += -mabi=ilp32
 
 # Linker directives.
 LFLAGS +=  -Xlinker -Map=$(TARGET).map 
@@ -43,6 +45,7 @@ LFLAGS += -lc
 LFLAGS += -lgcc
 LFLAGS += -lm
 LFLAGS += -march=rv32imac
+LFLAGS += -mabi=ilp32
 LFLAGS += -Wl,--gc-sections
 LFLAGS += -T$(CHIP)/linker.ld
 

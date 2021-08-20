@@ -1,7 +1,7 @@
 #include "riscv_encoding.h"
 
-    .global eclic_msip_handler
-    .global eclic_mtip_handler
+    .global brisc_isr_yield     // eclic_msip_handler
+    .global brisc_isr_systick   // eclic_mtip_handler
     .global default_interrupt_handler
     .global reset_handler
 
@@ -16,11 +16,11 @@ vtable:
     .align 2
     .word 0
     .word 0
-    .word eclic_msip_handler
+    .word brisc_isr_yield       // eclic_msip_handler
     .word 0
     .word 0
     .word 0
-    .word eclic_mtip_handler
+    .word brisc_isr_systick     // eclic_mtip_handler
     .word 0
     .word 0
     .word 0
