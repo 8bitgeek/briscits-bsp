@@ -55,7 +55,7 @@ Prior to compiling for a particular CPU target, some environment variables need 
 ## RISC-V
 ```
 export BRISC_CPU=riscv/RV32IMAC
-export BRISC_GCC=riscv32-unknown-elf
+export BRISC_GCC=riscv64-unknown-elf
 ```
 ## Cortex-M7
 ```
@@ -98,7 +98,7 @@ make -f bsp/generic-stm32f746/Makefile
 
 ## Attach GDB on RISCV target
 ```
-riscv32-unknown-elf-gdb ./main.elf
+riscv64-unknown-elf-gdb ./main.elf
 target extended-remote localhost:3333
 load main.elf
 break main
