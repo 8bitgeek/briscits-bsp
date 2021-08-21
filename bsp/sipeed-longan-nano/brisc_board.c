@@ -3,6 +3,7 @@
 #include <rgb_led.h>
 #include <xprintf.h>
 #include <gd32vf103_usart.h>
+#include <gd32vf103_fwdgt.h>
 
 static unsigned char usart_in(void);
 static void usart_out(unsigned char ch);
@@ -98,3 +99,34 @@ extern uint32_t board_clkfreq( void )
 {
     return SystemCoreClock;
 }
+
+extern void board_wdg_setup( uint32_t ms)
+{
+
+    uint8_t prescaler_div;
+    int16_t reload_value;
+    if ( ms < 7 )
+    {
+        uint16_t ticks_per_ms = 4095 / 409;             // 10.01
+        prescaler_div = FWDGT_PSC_DIV4;
+        reload_value = ms * ticks_per_ms;
+    }
+    else
+    {
+        uint32_t ticks_per_ms = (4095*1000) / 26214;   // 0.156 * 1000 = 156
+        prescaler_div = FWDGT_PSC_DIV256;
+        reload_value = ((ms*1000) * ticks_per_ms)/1000;
+    }
+    fwdgt_config(int16_t reload_value, uint8_t prescaler_div);
+}
+
+extern void board_wdg_enable( void )
+{
+    fwdgt_enable();
+}
+
+extern void board_wdg_reload( void )
+{
+    fwdgt_counter_reload();
+}
+

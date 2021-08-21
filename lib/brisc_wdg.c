@@ -31,20 +31,69 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <rgb_led.h>
+#include <brisc_wdg.h>
 
-extern void rgb_led_r(bool state)
+typedef struct brisc_wdg
 {
-    gpio_bit_write( GPIOB, GPIO_PIN_5, state );
+    uint32_t    wdg_timeout;    /**< Timeout in jiffies */
+    uint32_t    wdg_count_down; /**< Timeout count down to zero */
+    bool        enabled;
+} brisc_wdg_t __attribute__ ((aligned (8)));
+
+static brisc_wdg_t brisc_wdg[BRISC_THREAD_MAX];
+
+static void b_hw_wdg_service( void );
+
+extern void b_hw_wdg_setup( uint32_t ms )
+{
+    memset(brisc_wdg,0,sizeof(brisc_wdg));
+    b_thread_set_systick_fn(b_hw_wdg_service);
+    board_wdg_setup( ms );
 }
 
-extern void rgb_led_g(bool state)
+extern void b_hw_wdg_enable( void )
 {
-    gpio_bit_write( GPIOB, GPIO_PIN_0, state );
+    board_wdg_enable();
 }
 
-extern void rgb_led_b(bool state)
+extern void b_hw_wdg_reload( void )
 {
-    gpio_bit_write( GPIOB, GPIO_PIN_1, state );
+    board_wdg_reload();
+}
+
+/** ***************************************************************************
+ * @brief Reload the h/w watchdog timer.
+******************************************************************************/
+static void b_hw_wdg_service( void )
+{
+    bool checked_in=true;
+    for( int id=0; checked_in && id < BRISC_THREAD_MAX; id++ )
+    {
+        brisc_wdg_t* wd = &brisc_wdg[id];
+        if ( wd->enabled )
+        {
+            if ( wd->wdg_count_down == 0 || 
+                    wd->wdg_count_down > brisc_wdg[id].wdg_timeout )
+                checked_in=false;
+            else
+                --wd->wdg_count_down;
+    }
+    if ( checked_in )
+        b_hw_wdg_reload();
+}
+
+extern void b_hw_wdg_thread_setup( int id, uint32_t ms )
+{
+    brisc_wdg[id].wdg_count_down = brisc_wdg[id].wdg_timeout = ms;
+}
+
+extern void b_hw_wdg_thread_enable( int id )
+{
+    brisc_wdg[id].enabled=true;
+}
+
+extern void b_hw_wdg_thread_reload( int id )
+{
+    brisc_wdg[id].wdg_count_down = brisc_wdg[id].wdg_timeout;
 }
 
