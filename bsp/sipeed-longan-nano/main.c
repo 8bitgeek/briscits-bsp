@@ -2,6 +2,10 @@
 #include <brisc_delay.h>
 #include <rgb_led.h>
 #include <xprintf.h>
+#include <watchdog.h>
+
+#define HW_WD_TO        (500)
+#define SW_WD_TO        (250)
 
 #define DEC_DELAY       (2)
 #define INC_DELAY       DEC_DELAY
@@ -22,11 +26,22 @@ static int blue_thread_handle  = (-1);
 static int main_thread_handle  = (-1);
 
 static void sweep_delay(int* delay);
-
+static void blocking_cb(void);
 static void run_red  (void* arg);
 static void run_green(void* arg);
 static void run_blue (void* arg);
 static void run_main (void* arg);
+
+static void watchdog_cb(int id)
+{
+    xprintf( "w/d t/o %d\n", id );
+}
+
+static void blocking_cb(void)
+{
+    int id = b_thread_current_id();
+    watchdog_thread_reload( id );
+}
 
 static void sweep_delay(int* delay)
 {
@@ -46,7 +61,6 @@ static void sweep_delay(int* delay)
     }
 } 
 
-
 static void run_red(void* arg)
 {
     for(EVER)
@@ -57,6 +71,7 @@ static void run_red(void* arg)
         b_delay_ms(*delay);
         rgb_led_r(true);
         b_delay_ms(*delay);
+        watchdog_thread_reload(red_thread_handle);
     }
 }
 
@@ -70,6 +85,7 @@ static void run_green(void* arg)
         b_delay_ms(*delay);
         rgb_led_g(false);
         b_delay_ms(*delay);
+        watchdog_thread_reload(green_thread_handle);
     }
 }
 
@@ -83,9 +99,9 @@ static void run_blue(void* arg)
         b_delay_ms((*delay)*2);
         rgb_led_b(true);
         b_delay_ms((*delay)*2);
+        watchdog_thread_reload(blue_thread_handle);
     }
 }
-
 
 // 'main' thread - sweeps the delay
 static void run_main(void* arg)
@@ -95,9 +111,11 @@ static void run_main(void* arg)
     {
         sweep_delay(delay);
         b_delay_ms((*delay)*2);
+        watchdog_thread_reload(main_thread_handle);
+        if ( xgetchar() == 'w' )
+            for(;;);
     }
 }
-
 
 int main( void )
 {
@@ -105,17 +123,34 @@ int main( void )
 
     if ( (main_thread_handle  = b_thread_init( "main" )) >= 0 )
     {
+        watchdog_setup(HW_WD_TO);
+        watchdog_enable();
+        b_thread_set_block_fn(blocking_cb);
+        watchdog_set_callback_fn(watchdog_cb);
+
+        //watchdog_thread_setup( main_thread_handle, SW_WD_TO );
+        //watchdog_thread_enable( main_thread_handle );
+
         xprintf( "CLK = %f GHz\n", (float)board_clkfreq()/1000000000.0f );
+        xprintf( "Press 'w' to trigger watchdog timeout...\n" );
 
         if ( (red_thread_handle = b_thread_create( "red", run_red, &delay, red_stack, STACK_WORDS )) >= 0)
         {
+            watchdog_thread_setup( red_thread_handle, SW_WD_TO );
+            watchdog_thread_enable( red_thread_handle );
             if ( (green_thread_handle = b_thread_create( "green", run_green, &delay, green_stack, STACK_WORDS )) >= 0)
             {
+                watchdog_thread_setup( green_thread_handle, SW_WD_TO );
+                watchdog_thread_enable( green_thread_handle );
                 if ( (blue_thread_handle = b_thread_create( "blue", run_blue, &delay, blue_stack, STACK_WORDS )) >= 0)
                 {
+                    watchdog_thread_setup( blue_thread_handle, SW_WD_TO );
+                    watchdog_thread_enable( blue_thread_handle );
+
                     b_thread_start( red_thread_handle );
                     b_thread_start( blue_thread_handle );
                     b_thread_start( green_thread_handle );
+        
                     run_main( &delay );
                 }
             }

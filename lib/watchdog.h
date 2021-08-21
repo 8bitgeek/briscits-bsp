@@ -31,8 +31,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _DELAY_H_
-#define _DELAY_H_
+#ifndef _WATCHDOG_H_
+#define _WATCHDOG_H_
 
 #include <brisc_thread.h>
 
@@ -45,36 +45,41 @@ extern "C"
  * @brief Setup maximum watchdog timout (h/w timeout). 
  * @param ms Number of milliseconds.
 ******************************************************************************/
-extern void b_hw_wdg_setup( uint32_t ms );
+extern void watchdog_setup( uint32_t ms );
 
 /** ***************************************************************************
  * @brief Enable the watchdog timer system. 
 ******************************************************************************/
-extern void b_hw_wdg_enable( void );
+extern void watchdog_enable( void );
 
 /** ***************************************************************************
  * @brief Reload the h/w watchdog timer.
 ******************************************************************************/
-extern void b_hw_wdg_reload( void );
+extern void watchdog_reload( void );
+
+/** ***************************************************************************
+ * @brief Reload the h/w watchdog timer.
+******************************************************************************/
+extern void watchdog_set_callback_fn(void (*watchdog_cb_fn)(int) );
 
 /** ***************************************************************************
  * @brief Reload the h/w watchdog timer.
  * @param id Thread id
  * @param ms Number of milliseconds for wachdog window.
 ******************************************************************************/
-extern void b_hw_wdg_thread_setup( int id, uint32_t ms );
+extern void watchdog_thread_setup( int id, uint32_t ms );
 
 /** ***************************************************************************
  * @brief Enable the s/w watchdog timer.
  * @param id Thread id
 ******************************************************************************/
-extern void b_hw_wdg_thread_enable( int id );
+extern void watchdog_thread_enable( int id );
 
 /** ***************************************************************************
  * @brief Reload the s/w watchdog timer.
  * @param id Thread id
 ******************************************************************************/
-extern void b_hw_wdg_thread_reload( int id );
+extern void watchdog_thread_reload( int id );
 
 #ifdef __cplusplus
 }

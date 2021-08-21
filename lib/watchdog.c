@@ -31,69 +31,91 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_wdg.h>
+#include <watchdog.h>
+#include <brisc_board.h>
+#include <string.h>
 
-typedef struct brisc_wdg
+typedef struct watchdog
 {
     uint32_t    wdg_timeout;    /**< Timeout in jiffies */
     uint32_t    wdg_count_down; /**< Timeout count down to zero */
     bool        enabled;
-} brisc_wdg_t __attribute__ ((aligned (8)));
+} watchdog_t;
 
-static brisc_wdg_t brisc_wdg[BRISC_THREAD_MAX];
-
-static void b_hw_wdg_service( void );
-
-extern void b_hw_wdg_setup( uint32_t ms )
+typedef struct
 {
-    memset(brisc_wdg,0,sizeof(brisc_wdg));
-    b_thread_set_systick_fn(b_hw_wdg_service);
+    watchdog_t watchdog[BRISC_THREAD_MAX];
+    void (*watchdog_cb_fn)(int);
+} watchdog_state_t;
+
+static watchdog_state_t watchdog_state;
+
+static void watchdog_service( void );
+
+extern void watchdog_setup( uint32_t ms )
+{
+    memset(&watchdog_state,0,sizeof(watchdog_state));
+    b_thread_set_yield_fn(watchdog_service);
     board_wdg_setup( ms );
 }
 
-extern void b_hw_wdg_enable( void )
+extern void watchdog_enable( void )
 {
     board_wdg_enable();
 }
 
-extern void b_hw_wdg_reload( void )
+extern void watchdog_reload( void )
 {
     board_wdg_reload();
+}
+
+extern void watchdog_set_callback_fn(void (*watchdog_cb_fn)(int) )
+{
+    watchdog_state.watchdog_cb_fn = watchdog_cb_fn;
 }
 
 /** ***************************************************************************
  * @brief Reload the h/w watchdog timer.
 ******************************************************************************/
-static void b_hw_wdg_service( void )
+static void watchdog_service( void )
 {
     bool checked_in=true;
-    for( int id=0; checked_in && id < BRISC_THREAD_MAX; id++ )
+    for( int id=0; id < BRISC_THREAD_MAX; id++ )
     {
-        brisc_wdg_t* wd = &brisc_wdg[id];
+        watchdog_t* wd = &watchdog_state.watchdog[id];
         if ( wd->enabled )
         {
-            if ( wd->wdg_count_down == 0 || 
-                    wd->wdg_count_down > brisc_wdg[id].wdg_timeout )
-                checked_in=false;
-            else
+            if ( wd->wdg_count_down )
                 --wd->wdg_count_down;
+
+            if ( wd->wdg_count_down == 0 || wd->wdg_count_down > wd->wdg_timeout )
+            {
+                if ( watchdog_state.watchdog_cb_fn )
+                    watchdog_state.watchdog_cb_fn(id);
+                checked_in=false;
+            }
+        }
     }
     if ( checked_in )
-        b_hw_wdg_reload();
+        watchdog_reload();
 }
 
-extern void b_hw_wdg_thread_setup( int id, uint32_t ms )
+extern void watchdog_thread_setup( int id, uint32_t ms )
 {
-    brisc_wdg[id].wdg_count_down = brisc_wdg[id].wdg_timeout = ms;
+    watchdog_t* wd = &watchdog_state.watchdog[id];
+    wd->wdg_count_down = wd->wdg_timeout = ms;
 }
 
-extern void b_hw_wdg_thread_enable( int id )
+extern void watchdog_thread_enable( int id )
 {
-    brisc_wdg[id].enabled=true;
+    watchdog_t* wd = &watchdog_state.watchdog[id];
+    wd->enabled=true;
 }
 
-extern void b_hw_wdg_thread_reload( int id )
+extern void watchdog_thread_reload( int id )
 {
-    brisc_wdg[id].wdg_count_down = brisc_wdg[id].wdg_timeout;
+    watchdog_t* wd = &watchdog_state.watchdog[id];
+    if ( wd->enabled && id)
+        wd->wdg_count_down = wd->wdg_timeout;
 }
 
