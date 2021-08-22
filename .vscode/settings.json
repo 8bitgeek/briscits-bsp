@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "string.h": "c"
+        "string.h": "c",
+        "brisc_thread.h": "c",
+        "cpu.h": "c",
+        "rgb_led.h": "c"
     }
 }

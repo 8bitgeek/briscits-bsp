@@ -43,6 +43,7 @@ void put_dump (const void* buff, unsigned long addr, int len, int width);
 #endif
 
 #if XPRINTF_USE_XFUNC_IN
+#define xgetchar() board_getchar()
 #define xdev_in(func) xfunc_in = (unsigned char(*)(void))(func)
 extern unsigned char (*xfunc_in)(void);
 int xgets (char* buff, int len);

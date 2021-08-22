@@ -53,8 +53,6 @@ LFLAGS += -T$(CHIP)/linker.ld
 CFLAGS += -DXPRINTF_USE_XFUNC_OUT=1
 CFLAGS += -DXPRINTF_USE_XFUNC_IN=1
 CFLAGS += -DXPRINTF_USE_FLOAT=1
-C_SRC  += lib/xprintf.c
-C_SRC  += lib/ftoa.c
 
 # Header file directories.
 INCLUDE += -I bsp/$(BOARD)
@@ -74,7 +72,14 @@ C_SRC  += $(CHIP_COMMON)/gd32vf103_gpio.c
 C_SRC  += $(CHIP_COMMON)/gd32vf103_rcu.c
 C_SRC  += $(CHIP_COMMON)/gd32vf103_spi.c
 C_SRC  += $(CHIP_COMMON)/gd32vf103_usart.c
+C_SRC  += $(CHIP_COMMON)/gd32vf103_fwdgt.c
 C_SRC  += $(CPU)/cpu.c
+
+# LIB Source files
+C_SRC  += lib/xprintf.c
+C_SRC  += lib/ftoa.c
+C_SRC  += lib/ftoa.c
+C_SRC  += lib/watchdog.c
 
 # BOARD Source files
 C_SRC  += bsp/$(BOARD)/main.c
