@@ -44,8 +44,9 @@ typedef struct watchdog
 
 typedef struct
 {
-    watchdog_t watchdog[BRISC_THREAD_MAX];
-    void (*watchdog_cb_fn)(int);
+    watchdog_t  watchdog[BRISC_THREAD_MAX];
+    void        (*watchdog_cb_fn)(int);
+    bool        expired;
 } watchdog_state_t;
 
 static watchdog_state_t watchdog_state;
@@ -55,7 +56,7 @@ static void watchdog_service( void );
 extern void watchdog_setup( uint32_t ms )
 {
     memset(&watchdog_state,0,sizeof(watchdog_state));
-    b_thread_set_yield_fn(watchdog_service);
+    b_thread_set_systick_fn(watchdog_service);
     board_wdg_setup( ms );
 }
 
@@ -75,29 +76,30 @@ extern void watchdog_set_callback_fn(void (*watchdog_cb_fn)(int) )
 }
 
 /** ***************************************************************************
- * @brief Reload the h/w watchdog timer.
+ * @brief Reload the h/w watchdog timer if all s/w timers are checked in.
 ******************************************************************************/
 static void watchdog_service( void )
 {
-    bool checked_in=true;
-    for( int id=0; id < BRISC_THREAD_MAX; id++ )
+    if ( !watchdog_state.expired )
     {
-        watchdog_t* wd = &watchdog_state.watchdog[id];
-        if ( wd->enabled )
+        for( int id=0; id < BRISC_THREAD_MAX; id++ )
         {
-            if ( wd->wdg_count_down )
-                --wd->wdg_count_down;
-
-            if ( wd->wdg_count_down == 0 || wd->wdg_count_down > wd->wdg_timeout )
+            watchdog_t* wd = &watchdog_state.watchdog[id];
+            if ( wd->enabled )
             {
-                if ( watchdog_state.watchdog_cb_fn )
-                    watchdog_state.watchdog_cb_fn(id);
-                checked_in=false;
+                if ( wd->wdg_count_down )
+                    --wd->wdg_count_down;
+                if ( wd->wdg_count_down == 0 )
+                {
+                    if ( watchdog_state.watchdog_cb_fn )
+                        watchdog_state.watchdog_cb_fn(id);
+                    watchdog_state.expired=true;
+                    for(;;);
+                }
             }
         }
-    }
-    if ( checked_in )
         watchdog_reload();
+    }
 }
 
 extern void watchdog_thread_setup( int id, uint32_t ms )
@@ -115,7 +117,6 @@ extern void watchdog_thread_enable( int id )
 extern void watchdog_thread_reload( int id )
 {
     watchdog_t* wd = &watchdog_state.watchdog[id];
-    if ( wd->enabled && id)
-        wd->wdg_count_down = wd->wdg_timeout;
+    wd->wdg_count_down = wd->wdg_timeout;
 }
 
