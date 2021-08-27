@@ -31,7 +31,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_board.h>
+#include <board.h>
 #include <stm32f746xx.h>
 #include <core_cm7.h>
 #include <stdbool.h>

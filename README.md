@@ -70,7 +70,6 @@ export BRISC_CFLAGS=-ggdb
 ```
 export BRISC_CFLAGS=-Os
 ```
-
 # Make BRISCITS scheduler (libbrisc.a)
 ```
 cd briscits

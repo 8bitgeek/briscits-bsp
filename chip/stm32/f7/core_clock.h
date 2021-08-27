@@ -34,7 +34,7 @@ SOFTWARE.
 #ifndef _CORE_CLOCK_H_
 #define _CORE_CLOCK_H_
 
-#include <brisc_board.h>
+#include <board.h>
 
 #ifdef __cplusplus
 extern "C"

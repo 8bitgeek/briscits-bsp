@@ -32,7 +32,7 @@ SOFTWARE.
 
 ******************************************************************************/
 #include <watchdog.h>
-#include <brisc_board.h>
+#include <board.h>
 #include <string.h>
 
 typedef struct watchdog

@@ -3,6 +3,11 @@
         "string.h": "c",
         "brisc_thread.h": "c",
         "cpu.h": "c",
-        "rgb_led.h": "c"
+        "rgb_led.h": "c",
+        "brisc_board.h": "c",
+        "board.h": "c",
+        "gd32vf103_fwdgt.h": "c",
+        "core_cm7.h": "c",
+        "watchdog.h": "c"
     }
 }
