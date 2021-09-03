@@ -6,15 +6,15 @@
 #include <gd32vf103_fwdgt.h>
 #include <gd32vf103_dbg.h>
 
-static unsigned char usart_in(void);
+static int usart_in(void);
 static void usart_out(unsigned char ch);
 static void usart_config(uint32_t usart_periph);
 
-static unsigned char usart_in(void)
+static int usart_in(void)
 {
     if ( usart_flag_get( USART0, USART_FLAG_RBNE ) )
         return ( usart_data_receive( USART0 ) & 0xFF );
-    return 0;
+    return -1;
 }
 
 static void usart_out(unsigned char ch)

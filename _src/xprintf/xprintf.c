@@ -353,61 +353,52 @@ void put_dump (
 
 
 #if XPRINTF_USE_XFUNC_IN
-unsigned char (*xfunc_in)(void);	/* Pointer to the input stream */
+
+int (*xfunc_in)(void);	/* Pointer to the input stream */
 
 /*----------------------------------------------*/
 /* Get a line from the input                    */
 /*----------------------------------------------*/
 
-int xgets (		/* 0:End of stream, 1:A line arrived */
-	char* buff,	/* Pointer to the buffer */
-	int len		/* Buffer length */
+char* xgets (		/* 0:End of stream, 1:A line arrived */
+	char* buff,		/* Pointer to the buffer */
+	int len			/* Buffer length */
 )
 {
-	int c, i;
+	return xfgets(xfunc_in,buff, len);	/* Get a line */
+}
 
 
-	if (!xfunc_in) return 0;		/* No input function specified */
-
-	i = 0;
-	for (;;) {
-		c = xfunc_in();				/* Get a char from the incoming stream */
-		if (!c) return 0;			/* End of stream? */
-		if (c == '\r') break;		/* End of line? */
-		if (c == '\b' && i) {		/* Back space? */
-			i--;
-			if (_LINE_ECHO) xputc((unsigned char)c);
-			continue;
+char* xfgets (			/* 0:End of stream, 1:A line arrived */
+	int (*func)(void),	/* Pointer to the input stream function */
+	char* buff,			/* Pointer to the buffer */
+	int len				/* Buffer length */
+)
+{
+	if ( func )							/* output fn specified */
+	{
+		int c;
+		int i = 0;
+		for (;;) {
+			c = func();					/* Get a char from the incoming stream */
+			if (c<0) return -1;			/* End of stream? */
+			if (c == '\r') break;		/* End of line? */
+			if (c == '\b' && i) {		/* Back space? */
+				i--;
+				if (_LINE_ECHO) xputc((unsigned char)c);
+				continue;
+			}
+			if (c >= ' ' && i < len - 1) {	/* Visible chars */
+				buff[i++] = c;
+				if (_LINE_ECHO) xputc((unsigned char)c);
+			}
 		}
-		if (c >= ' ' && i < len - 1) {	/* Visible chars */
-			buff[i++] = c;
-			if (_LINE_ECHO) xputc((unsigned char)c);
-		}
+		buff[i] = 0;	/* Terminate with a \0 */
+		if (_LINE_ECHO) xputc('\n');
+		return buff;
 	}
-	buff[i] = 0;	/* Terminate with a \0 */
-	if (_LINE_ECHO) xputc('\n');
-	return 1;
+	return NULL;
 }
-
-
-int xfgets (	/* 0:End of stream, 1:A line arrived */
-	unsigned char (*func)(void),	/* Pointer to the input stream function */
-	char* buff,	/* Pointer to the buffer */
-	int len		/* Buffer length */
-)
-{
-	unsigned char (*pf)(void);
-	int n;
-
-
-	pf = xfunc_in;			/* Save current input device */
-	xfunc_in = func;		/* Switch input to specified device */
-	n = xgets(buff, len);	/* Get a line */
-	xfunc_in = pf;			/* Restore input device */
-
-	return n;
-}
-
 
 /*----------------------------------------------*/
 /* Get a value of the string                    */

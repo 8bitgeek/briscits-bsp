@@ -36,15 +36,15 @@ SOFTWARE.
 #include <rgb_led.h>
 #include <xprintf.h>
 
-static unsigned char usart_in(void);
+static int usart_in(void);
 static void usart_out(unsigned char ch);
 static void usart_config(uint32_t usart_periph);
 
-unsigned char usart_in(void)
+unsigned int usart_in(void)
 {
     if ( usart_flag_get( USART0, USART_FLAG_RBNE ) )
         return ( usart_data_receive( USART0 ) & 0xFF );
-    return 0;
+    return -1;
 }
 
 void usart_out(unsigned char ch)

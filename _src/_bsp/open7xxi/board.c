@@ -1,60 +1,39 @@
 #include <board.h>
-#include <brisc_thread.h>
-#include <xprintf.h>
-#include <stm32f746xx.h>
 
-static void peripheral_clock_setup( void );
+#include <hw_dma.h>
+#include <hw_exti.h>
+#include <hw_pin.h>
+#include <hw_usart.h>
+#include <hw_dac.h>
+#include <hw_tim.h>
+#include <hw_adc.h>
+#include <hw_sdram.h>
+#include <filesystem.h>
 
-void board_init( void ) 
+hw_adc_t board_adc;
+
+extern void early_init( void )
 {
-    peripheral_clock_setup();
-	cpu_int_enable();
+	hw_clocks_setup();
+	hw_gpio_setup();
+	hw_pin_setup();
 }
 
-static void peripheral_clock_setup( void )
+extern void late_init( void )
 {
-	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
-
-	RCC->AHB1ENR |= (	RCC_AHB1ENR_CRCEN		|
-						RCC_AHB1ENR_DMA1EN		|
-						RCC_AHB1ENR_DMA2EN		|
-						RCC_AHB1ENR_DTCMRAMEN	|
-						RCC_AHB1ENR_GPIOAEN		|
-						RCC_AHB1ENR_GPIOBEN		|
-						RCC_AHB1ENR_GPIOCEN		|
-						RCC_AHB1ENR_GPIODEN		|
-						RCC_AHB1ENR_GPIOEEN		|
-						RCC_AHB1ENR_GPIOFEN		|
-						RCC_AHB1ENR_GPIOGEN		|
-						RCC_AHB1ENR_GPIOHEN		|
-						RCC_AHB1ENR_GPIOIEN		|
-						RCC_AHB1ENR_GPIOJEN		);
-	
-	RCC->AHB2ENR |= (	RCC_AHB2ENR_RNGEN		);
-
-	RCC->APB1ENR |= (	RCC_APB1ENR_DACEN		|
-						RCC_APB1ENR_SPI2EN		|
-						RCC_APB1ENR_USART2EN	|
-						RCC_APB1ENR_USART3EN	|
-						RCC_APB1ENR_UART7EN		|
-						RCC_APB1ENR_TIM2EN		|
-                        RCC_APB1ENR_TIM3EN      |
-						RCC_APB1ENR_TIM4EN		|
-						RCC_APB1ENR_TIM5EN		);
-
-	RCC->APB2ENR |= (	RCC_APB2ENR_ADC1EN		|
-						RCC_APB2ENR_ADC2EN		|
-						RCC_APB2ENR_SPI1EN		|
-						RCC_APB2ENR_SYSCFGEN	|
-						RCC_APB2ENR_USART1EN	|
-                        RCC_APB2ENR_USART6EN	|
-						RCC_APB2ENR_TIM1EN		|
-                        RCC_APB2ENR_TIM8EN      );
-
-	RCC->AHB3ENR |= (	RCC_AHB3ENR_FMCEN		);
+	hw_usart_setup();
+    hw_exti_setup();
+   	hw_dac_setup();
+   	hw_adc_setup(&board_adc,ADC1,ADC_IRQn);
 }
 
-extern uint32_t board_clkfreq( void )
+extern void caribou_hw_init( void )
 {
-    return SystemCoreClock;
+	hw_sdram_setup();
+	filesystem_setup();
+}
+
+uint32_t HAL_GetTick()
+{
+	return caribou_timer_ticks();
 }

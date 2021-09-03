@@ -4,6 +4,8 @@ MCU_FLOAT    	= soft
 CORTEX_VER   	= $(ENV_CORTEX_VER)
 OPENOCD_TARGET 	= stm32f7x
 
+COOK_OS 		= ${ENV_COOK_OS}
+
 CFLAGS_COMMON += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT)
 CFLAGS_COMMON += -DHSE_VALUE=8000000U 
 CFLAGS_COMMON += -DCARIBOU_FLOAT=1 -DSTM32F746xx=1 
