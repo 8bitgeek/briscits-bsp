@@ -82,7 +82,7 @@ cd ..
 ```
 make -f bsp/sipeed-longan-nano/Makefile
 ```
-## WaveShare (SSTM332F746) 32-bit Cortex-M7
+## WaveShare (STM332F746) 32-bit Cortex-M7
 ```
 make -f bsp/generic-stm32f746/Makefile
 ```
