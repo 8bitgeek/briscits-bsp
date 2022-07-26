@@ -54,7 +54,7 @@ Prior to compiling for a particular CPU target, some environment variables need 
 
 ## RISC-V
 ```
-export BRISC_CPU=riscv/RV32IMAC
+export BRISC_CPU=riscv/BumbleBee/RV32IMAC
 export BRISC_GCC=riscv64-unknown-elf
 ```
 ## Cortex-M7
@@ -78,7 +78,7 @@ make
 cd ..
 ```
 
-## SiPEED Longan Nano (GD32VF103CBT6) 32-bit RISCV RV32IMAC
+## SiPEED Longan Nano (GD32VF103CBT6) 32-bit RISCV BumbleBee RV32IMAC
 ```
 make -f bsp/sipeed-longan-nano/Makefile
 ```

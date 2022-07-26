@@ -12,3 +12,24 @@
 ```
 
 # SCRIPTS
+
+Usage
+
+```
+stripts/make[arch].sh [bsp] [cflags] [makefile-arg]
+```
+
+* arch = 
+  * arm
+  * riscv
+* bsp = 
+  * generic-stm32f746
+  * seeedstudio-gd32
+  * sipeed-longan-nano
+  * ch32v103c-r1
+* cflags 
+  * -ggdb
+  * -O2
+* makefile-arg
+  * clean
+

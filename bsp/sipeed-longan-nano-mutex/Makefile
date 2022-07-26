@@ -12,7 +12,7 @@ OPENOCD_TARGET_CFG=openocd/openocd_gd32vf103.cfg
 
 # CPU
 CPU_COMMON=cpu/riscv
-CPU=$(CPU_COMMON)/RV32IMAC
+CPU=$(CPU_COMMON)/BumbleBee/RV32IMAC
 
 # Chip
 CHIP_FAMILY=gd32
