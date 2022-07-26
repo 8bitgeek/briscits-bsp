@@ -7,12 +7,12 @@ CFLAGS += -DBRISC_THREAD_MAX=4
 
 # CPU
 CPU_COMMON=briscits/cpu/riscv
-CPU=$(CPU_COMMON)/RV32IMAC
+CPU=$(CPU_COMMON)/RISC-V3A/RV32IMAC
 
 # Chip
 CHIP_FAMILY=gd32
 CHIP_COMMON=chip/$(CHIP_FAMILY)
-CHIP=$(CHIP_COMMON)/gd32vf103xb
+CHIP=$(CHIP_COMMON)/ch32v103xb
 
 # GCC toolchain programs.
 CC = ${BRISC_GCC}-gcc
@@ -67,13 +67,14 @@ AS_SRC  += $(CHIP)/vectors.S
 AS_SRC  += $(CHIP_COMMON)/boot.S
 C_SRC  += $(CHIP_COMMON)/bss_init.c
 C_SRC  += $(CHIP_COMMON)/n200_func.c
-C_SRC  += $(CHIP_COMMON)/system_gd32vf103.c
-C_SRC  += $(CHIP_COMMON)/gd32vf103_gpio.c
-C_SRC  += $(CHIP_COMMON)/gd32vf103_rcu.c
-C_SRC  += $(CHIP_COMMON)/gd32vf103_spi.c
-C_SRC  += $(CHIP_COMMON)/gd32vf103_usart.c
-C_SRC  += $(CHIP_COMMON)/gd32vf103_fwdgt.c
+C_SRC  += $(CHIP_COMMON)/system_ch32v103.c
+C_SRC  += $(CHIP_COMMON)/ch32v103_gpio.c
+C_SRC  += $(CHIP_COMMON)/ch32v103_rcc.c
+C_SRC  += $(CHIP_COMMON)/ch32v103_spi.c
+C_SRC  += $(CHIP_COMMON)/ch32v103_usart.c
+C_SRC  += $(CHIP_COMMON)/ch32v103_wwdg.c
 C_SRC  += $(CPU)/cpu.c
+C_SRC  += $(CPU)/core_riscv.c
 
 # LIB Source files
 C_SRC  += lib/xprintf.c

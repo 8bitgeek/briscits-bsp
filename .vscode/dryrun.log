@@ -1,0 +1,6 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/mike/development/github/briscits-bsp'
+make: Leaving directory '/home/mike/development/github/briscits-bsp'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

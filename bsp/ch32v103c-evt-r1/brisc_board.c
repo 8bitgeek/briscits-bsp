@@ -2,9 +2,10 @@
 #include <brisc_thread.h>
 #include <rgb_led.h>
 #include <xprintf.h>
-#include <gd32vf103_usart.h>
-#include <gd32vf103_fwdgt.h>
-#include <gd32vf103_dbg.h>
+#include <ch32v103_rcc.h>
+#include <ch32v103_usart.h>
+#include <ch32v103_wwdg.h>
+#include <ch32v103_dbgmcu.h>
 
 static unsigned char usart_in(void);
 static void usart_out(unsigned char ch);
@@ -65,22 +66,62 @@ void spi_config(uint32_t spi_periph)
 
 void board_init( void ) 
 {
+    GPIO_InitTypeDef GPIO_InitStructure = {0};
+
     /* RCU CLOCKS */
 
-    rcu_periph_clock_enable(RCU_GPIOA);
-    rcu_periph_clock_enable(RCU_GPIOB);
-    rcu_periph_clock_enable(RCU_GPIOC);
-    rcu_periph_clock_enable(RCU_GPIOD);
-    rcu_periph_clock_enable(RCU_DMA0);
-    rcu_periph_clock_enable(RCU_USART0);
-    rcu_periph_clock_enable(RCU_SPI1);
-    rcu_periph_clock_enable(RCU_WWDGT);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_WWDG, ENABLE);
 
     /* DBG */
 
-    DBG_CTL |= DBG_FWDGT_HOLD;      /* hold fwdgt when debug halts cpu */
+    // DBG_CTL |= DBG_FWDGT_HOLD;      /* hold fwdgt when debug halts cpu */
+
+    /* LEDx */
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    /* UART1 */
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+
+
+
 
     /* RGB LEDx */
+
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+  
+
+
+
 
     gpio_init(  GPIOA, 
                 GPIO_MODE_OUT_PP, 

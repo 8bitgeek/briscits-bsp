@@ -5,9 +5,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include <gd32vf103.h>
-#include <n200_func.h>
-#include <riscv_encoding.h>
+#include <ch32f103.h>
+#include <core_riscv.h>
 #include <cpu.h>
 
 extern void     board_init( void );

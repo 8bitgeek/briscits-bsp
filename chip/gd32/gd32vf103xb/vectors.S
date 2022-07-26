@@ -30,6 +30,7 @@ vtable:
     .word 0
     .word 0
     .word 0
+    /* external interrupts  */
     .word eclic_bwei_handler
     .word eclic_pmovi_handler
     .word watchdog_IRQn_handler
