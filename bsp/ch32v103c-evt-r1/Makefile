@@ -1,7 +1,7 @@
 TARGET=main
 
 # Board
-BOARD=sipeed-longan-nano
+BOARD=ch32v103c-evt-r1
 CFLAGS += -DHXTAL_VALUE=8000000
 CFLAGS += -DBRISC_THREAD_MAX=4
 
@@ -66,6 +66,7 @@ INCLUDE += -I lib
 AS_SRC  += $(CHIP)/vectors.S
 AS_SRC  += $(CHIP_COMMON)/boot.S
 C_SRC  += $(CHIP_COMMON)/bss_init.c
+C_SRC  += $(CHIP_COMMON)/core_riscv.c
 C_SRC  += $(CHIP_COMMON)/system_ch32v10x.c
 C_SRC  += $(CHIP_COMMON)/ch32v10x_gpio.c
 C_SRC  += $(CHIP_COMMON)/ch32v10x_rcc.c
@@ -73,7 +74,6 @@ C_SRC  += $(CHIP_COMMON)/ch32v10x_spi.c
 C_SRC  += $(CHIP_COMMON)/ch32v10x_usart.c
 C_SRC  += $(CHIP_COMMON)/ch32v10x_wwdg.c
 C_SRC  += $(CPU)/cpu.c
-C_SRC  += $(CPU)/core_riscv.c
 
 # LIB Source files
 C_SRC  += lib/xprintf.c

@@ -2,10 +2,10 @@
 #include <brisc_thread.h>
 #include <rgb_led.h>
 #include <xprintf.h>
-#include <ch32v103_rcc.h>
-#include <ch32v103_usart.h>
-#include <ch32v103_wwdg.h>
-#include <ch32v103_dbgmcu.h>
+#include <ch32v10x_rcc.h>
+#include <ch32v10x_usart.h>
+#include <ch32v10x_wwdg.h>
+#include <ch32v10x_dbgmcu.h>
 
 #define DEBUG_UART USART1
 #define UART_BAUD 115200U
@@ -152,30 +152,31 @@ extern uint32_t board_clkfreq( void )
 
 extern bool board_wdg_setup( uint32_t ms)
 {
-    uint8_t prescaler_div;
-    int16_t reload_value;
-    if ( ms < 7 )
-    {
-        uint16_t ticks_per_ms = 4095 / 409;             // 10.01
-        prescaler_div = FWDGT_PSC_DIV4;
-        reload_value = ms * ticks_per_ms;
-    }
-    else
-    {
-        uint32_t ticks_per_ms = (4095*1000) / 26214;   // 0.156 * 1000 = 156
-        prescaler_div = FWDGT_PSC_DIV256;
-        reload_value = (ms * ticks_per_ms)/1000;
-    }
-    return fwdgt_config(reload_value,prescaler_div) == SUCCESS;
+    // uint8_t prescaler_div;
+    // int16_t reload_value;
+    // if ( ms < 7 )
+    // {
+    //     uint16_t ticks_per_ms = 4095 / 409;             // 10.01
+    //     prescaler_div = FWDGT_PSC_DIV4;
+    //     reload_value = ms * ticks_per_ms;
+    // }
+    // else
+    // {
+    //     uint32_t ticks_per_ms = (4095*1000) / 26214;   // 0.156 * 1000 = 156
+    //     prescaler_div = FWDGT_PSC_DIV256;
+    //     reload_value = (ms * ticks_per_ms)/1000;
+    // }
+    // return fwdgt_config(reload_value,prescaler_div) == SUCCESS;
+    return false;
 }
 
 extern void board_wdg_enable( void )
 {
-    fwdgt_enable();
+    // fwdgt_enable();
 }
 
 extern void board_wdg_reload( void )
 {
-    fwdgt_counter_reload();
+    // fwdgt_counter_reload();
 }
 

@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include <ch32f103.h>
+#include <ch32v10x.h>
 #include <core_riscv.h>
 #include <cpu.h>
 
