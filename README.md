@@ -13,7 +13,7 @@
 
 # BRISCITS
 
-This is a Board Support project for [BRISCITS](https://github.com/8bitgeek/briscits-bsp).
+This is a Board Support project for [BRISCITS](https://github.com/8bitgeek/briscits).
 
 # Prerequisite 
 
