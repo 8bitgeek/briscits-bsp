@@ -7,61 +7,62 @@
 #include <ch32v103_wwdg.h>
 #include <ch32v103_dbgmcu.h>
 
+#define DEBUG_UART USART1
+#define UART_BAUD 115200U
+
 static unsigned char usart_in(void);
 static void usart_out(unsigned char ch);
-static void usart_config(uint32_t usart_periph);
+static void usart_config(USART_TypeDef * usart_periph);
+static void spi_config(SPI_TypeDef *spi_periph);
 
 static unsigned char usart_in(void)
 {
-    if ( usart_flag_get( USART0, USART_FLAG_RBNE ) )
-        return ( usart_data_receive( USART0 ) & 0xFF );
+    if ( USART_GetFlagStatus( DEBUG_UART, USART_FLAG_RXNE ) )
+        return USART_ReceiveData( DEBUG_UART );
     return 0;
 }
 
 static void usart_out(unsigned char ch)
 {
-    b_thread_block_while( !usart_flag_get( USART0, USART_FLAG_TBE ) );
-    usart_data_transmit( USART0, (uint8_t) ch );
+    b_thread_block_while( USART_GetFlagStatus(USART2, USART_FLAG_TXE) );
+    USART_SendData( DEBUG_UART, ch );
 }
 
 extern int board_getchar( void )
 {
-    if ( usart_flag_get( USART0, USART_FLAG_RBNE ) )
-        return ( usart_data_receive( USART0 ) & 0xFF );
+    if ( USART_GetFlagStatus( DEBUG_UART, USART_FLAG_RXNE ) )
+        return USART_ReceiveData( DEBUG_UART ) & 0xFF;
     return -1;
 }
 
-static void usart_config(uint32_t usart_periph)
+static void usart_config(USART_TypeDef * usart_periph)
 {
-    /* USART configure */
-    usart_deinit(usart_periph);
-    usart_baudrate_set(usart_periph, 115200U);
-    usart_word_length_set(usart_periph, USART_WL_8BIT);
-    usart_stop_bit_set(usart_periph, USART_STB_1BIT);
-    usart_parity_config(usart_periph, USART_PM_NONE);
-    usart_hardware_flow_rts_config(usart_periph, USART_RTS_DISABLE);
-    usart_hardware_flow_cts_config(usart_periph, USART_CTS_DISABLE);
-    usart_receive_config(usart_periph, USART_RECEIVE_ENABLE);
-    usart_transmit_config(usart_periph, USART_TRANSMIT_ENABLE);
-    usart_enable(usart_periph);
+    USART_InitTypeDef USART_InitStructure = {0};
+    USART_InitStructure.USART_BaudRate = UART_BAUD;
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No;
+    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
+    USART_Init(USART2, &USART_InitStructure);
+    USART_Cmd(USART2, ENABLE);
 }
 
-void spi_config(uint32_t spi_periph)
+static void spi_config(SPI_TypeDef *spi_periph)
 {
-    spi_parameter_struct spi_init_struct;
-    /* deinitilize SPI and the parameters */
-    spi_i2s_deinit(spi_periph);
-    spi_struct_para_init(&spi_init_struct);
-
-    /* SPIx parameter config */
-    spi_init_struct.trans_mode           = SPI_TRANSMODE_FULLDUPLEX;
-    spi_init_struct.device_mode          = SPI_MASTER;
-    spi_init_struct.frame_size           = SPI_FRAMESIZE_8BIT;
-    spi_init_struct.clock_polarity_phase = SPI_CK_PL_HIGH_PH_2EDGE;
-    spi_init_struct.nss                  = SPI_NSS_SOFT;
-    spi_init_struct.prescale             = SPI_PSC_8;
-    spi_init_struct.endian               = SPI_ENDIAN_MSB;
-    spi_init(spi_periph, &spi_init_struct);
+    SPI_InitTypeDef  SPI_InitStructure = {0};
+    SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+    SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+    SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;
+    SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
+    SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+    SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;
+    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64;
+    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_LSB;
+    SPI_InitStructure.SPI_CRCPolynomial = 7;
+    SPI_Init(spi_periph, &SPI_InitStructure);
+    SPI_SSOutputCmd(spi_periph, DISABLE);
+    SPI_Cmd(spi_periph, ENABLE);
 }
 
 void board_init( void ) 
@@ -85,12 +86,12 @@ void board_init( void )
 
     /* LEDx */
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -107,46 +108,40 @@ void board_init( void )
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-
-
-
-
-    /* RGB LEDx */
-
-
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-  
-
-
-
-
-    gpio_init(  GPIOA, 
-                GPIO_MODE_OUT_PP, 
-                GPIO_OSPEED_2MHZ, 
-                GPIO_PIN_1 | GPIO_PIN_2 );
-    gpio_bit_set( GPIOA, GPIO_PIN_1 | GPIO_PIN_2 );
-
-    gpio_init(  GPIOC, 
-                GPIO_MODE_OUT_PP, 
-                GPIO_OSPEED_2MHZ, 
-                GPIO_PIN_13 );
-    gpio_bit_set( GPIOC, GPIO_PIN_13 );
-
-
-    /* USART0 */
-    gpio_init( GPIOA, GPIO_MODE_AF_PP,       GPIO_OSPEED_50MHZ, GPIO_PIN_9  );    /* connect port to USARTx_Tx */
-    gpio_init( GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10 );    /* connect port to USARTx_Rx */
-    usart_config( USART0 );
+    usart_config( DEBUG_UART );
     xdev_out(usart_out);
     xdev_in(usart_in);
 
-    /* SPI1 GPIO CS/PB12, SCK/PB13, MISO/PB14, MOSI/PB15 */
-    gpio_init( GPIOB, GPIO_MODE_OUT_PP,      GPIO_OSPEED_50MHZ, GPIO_PIN_12 );
-    gpio_init( GPIOB, GPIO_MODE_AF_PP,       GPIO_OSPEED_50MHZ, GPIO_PIN_13 | GPIO_PIN_15 );
-    gpio_init( GPIOB, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_14 );
+    /* SPI */
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;               /* SPI FLASH Slave Select */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;               /* MicroSD Slave Select */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;               /* C/D Card Detect */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;               /* SCLK */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;               /* MISO */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;               /* MOSI */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
     spi_config( SPI1 );
 }
 

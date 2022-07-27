@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jul 26 06:22:10 2022
+# Make data base, printed on Tue Jul 26 18:31:21 2022
 
 # Variables
 
@@ -81,7 +81,7 @@ LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 VSCODE_CWD = /home/mike
 # environment
-XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session2
+XDG_SESSION_PATH = /org/freedesktop/DisplayManager/Session0
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
@@ -89,7 +89,7 @@ PATH = /home/mike/.local/bin:/home/mike/bin:/home/mike/Xilinx/Vitis/2021.2/gnu/a
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/grumpy:@/tmp/.ICE-unix/393693,unix/grumpy:/tmp/.ICE-unix/393693
+SESSION_MANAGER = local/grumpy:@/tmp/.ICE-unix/2191,unix/grumpy:/tmp/.ICE-unix/2191
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # automatic
@@ -109,7 +109,7 @@ XDG_SESSION_DESKTOP = mate
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 545714
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2796
 # automatic
 %F = $(notdir $%)
 # environment
@@ -127,7 +127,7 @@ QT_QPA_PLATFORMTHEME = qt5ct
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 393774
+SSH_AGENT_PID = 2276
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = MATE
 # environment
@@ -167,11 +167,11 @@ QT_IM_MODULE = ibus
 # environment
 SHLVL = 0
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-0a899a85-ea54-4c8c-954d-c2b3df1e7eb2.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-9a2b5bcf-f4b0-49e7-8ef3-be43c37b6ece.sock
 # environment
 COMPIZ_CONFIG_PROFILE = mint
 # environment
-XDG_SESSION_ID = c6
+XDG_SESSION_ID = c2
 # environment
 USER = mike
 # makefile
@@ -205,6 +205,8 @@ GDK_BACKEND = x11
 # automatic
 +F = $(notdir $+)
 # environment
+NO_AT_BRIDGE = 1
+# environment
 QT_ACCESSIBILITY = 1
 # default
 MAKEFILES := 
@@ -233,9 +235,9 @@ MATE_DESKTOP_SESSION_ID = this-is-deprecated
 # environment
 LANG = C
 # environment
-VSCODE_PID = 545714
+VSCODE_PID = 2796
 # variable set hash-table stats:
-# Load=111/1024=11%, Rehash=0, Collisions=12/133=9%
+# Load=112/1024=11%, Rehash=0, Collisions=12/134=9%
 
 # Pattern-specific Variable Values
 
@@ -243,7 +245,7 @@ VSCODE_PID = 545714
 
 # Directories
 
-# . (device 2065, inode 9181213): 11 files, no impossibilities.
+# . (device 2065, inode 10103969): 11 files, no impossibilities.
 
 # 11 files, no impossibilities in 1 directories.
 
@@ -280,7 +282,6 @@ makefile:
 #  Modification time never checked.
 #  File has not been updated.
 
- 
 # Not a target:
 GNUmakefile:
 #  Implicit rule search has been done.
@@ -302,6 +303,6 @@ GNUmakefile:
 # strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
 # Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
-# Finished Make data base on Tue Jul 26 06:22:10 2022
+# Finished Make data base on Tue Jul 26 18:31:21 2022
 
  
