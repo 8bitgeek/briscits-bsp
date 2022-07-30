@@ -61,7 +61,7 @@ typedef enum {RESET = 0, SET = !RESET} FlagStatus, ITStatus;
 #define   RV_STATIC_INLINE  static  inline
 
 /* memory mapped structure for Program Fast Interrupt Controller (PFIC) */
-typedef struct{
+typedef struct {
   __I  uint32_t ISR[8];
   __I  uint32_t IPR[8];
   __IO uint32_t ITHRESDR;
@@ -84,18 +84,7 @@ typedef struct{
   __IO uint8_t IPRIOR[256];
   uint8_t RESERVED7[0x810];
   __IO uint32_t SCTLR;
-}PFIC_Type;
-
-/* memory mapped structure for SysTick */
-typedef struct
-{
-  __IO uint32_t R32_STK_CTLR;
-  __IO uint32_t R32_STK_CNTL;
-  __IO uint32_t R32_STK_CNTH;
-  __IO uint32_t R32_STK_CMPLR;
-  __IO uint32_t R32_STK_CMPHR;
-}SysTick_Type;
-
+} PFIC_Type;
 
 #define PFIC            ((PFIC_Type *) 0xE000E000 )
 #define NVIC            PFIC
@@ -103,7 +92,162 @@ typedef struct
 #define	NVIC_KEY2				((uint32_t)0xBCAF0000)
 #define	NVIC_KEY3				((uint32_t)0xBEEF0000)
 
+
+/*********************************************************************
+* System tick timer (SysTick)
+*********************************************************************/
+typedef struct {
+  __IO uint32_t CTLR;
+  __IO uint64_t CNT;
+  __IO uint64_t CMPR;
+} SysTick_Type;
+/*********************************************************************
+ * SysTick control register (STK_CTLR)
+*********************************************************************/
+#define SYSTICK_CTLR_SWIE   0x80000000    /**< Software interrupt trigger enable */
+#define SYSTICK_CTLR_INIT   0x00000020    /**< Counter Initial Value Update */
+#define SYSTICK_CTLR_STIE   0x00000002    /**< Counter Interrupt Enable */
+#define SYSTICK_CTLR_STE    0x00000001    /**< Systick Enable */
+/*********************************************************************
+ * System tick timer instance pointer (SysTick) 
+*********************************************************************/
 #define SysTick         ((SysTick_Type *) 0xE000F000)
+/*********************************************************************
+ * Defineds the frequency (Hz) at which the SysTick timer runs
+*********************************************************************/
+#define SYSTICK_HZ	    ((uint32_t)SystemCoreClock/8)
+
+/*********************************************************************
+ * @fn      SysTick_Enable
+ *
+ * @brief   SysTick counter enable 
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_Enable(void){
+  SysTick->CTLR |= SYSTICK_CTLR_STE;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Disable
+ *
+ * @brief   SysTick counter disable 
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_Disable(void){
+  SysTick->CTLR &= ~SYSTICK_CTLR_STE;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Enable Interrupt
+ *
+ * @brief   SysTick counter interrupt enable 
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_EnableIRQ(void){
+  SysTick->CTLR |= SYSTICK_CTLR_STIE;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Disable Interrupt
+ *
+ * @brief   SysTick counter interrupt disable 
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_DisableIRQ(void){
+  SysTick->CTLR &= ~SYSTICK_CTLR_STIE;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Enable Software Interrupt
+ *
+ * @brief   SysTick counter software interrupt enable 
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_EnableSWI(void){
+  SysTick->CTLR |= SYSTICK_CTLR_SWIE;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Disable Software Interrupt
+ *
+ * @brief   SysTick counter software interrupt disable 
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_DisableSWI(void){
+  SysTick->CTLR &= ~SYSTICK_CTLR_SWIE;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Set Count
+ *
+ * @brief   SysTick set count
+ *
+ * @param   count
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_SetCount(uint64_t count){
+  SysTick->CNT = count;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Get Count
+ *
+ * @brief   SysTick get count
+ *
+ * @param   none
+ *
+ * @return  count
+ */
+RV_STATIC_INLINE uint64_t SysTick_GetCount(void){
+  return SysTick->CNT;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Set Reload
+ *
+ * @brief   SysTick set reload
+ *
+ * @param   reload
+ *
+ * @return  none
+ */
+RV_STATIC_INLINE void SysTick_SetReload(uint64_t reload){
+  SysTick->CMPR = reload;
+}
+
+/*********************************************************************
+ * @fn      SysTick_Get Reload
+ *
+ * @brief   SysTick get reload
+ *
+ * @param   none
+ *
+ * @return  reload
+ */
+RV_STATIC_INLINE uint64_t SysTick_GetReload(void){
+  return SysTick->CMPR;
+}
+
+
 
 
 /*********************************************************************
@@ -117,6 +261,9 @@ RV_STATIC_INLINE void __NOP()
 {
   __asm volatile ("nop");
 }
+
+
+
 
 /*********************************************************************
  * @fn      NVIC_EnableIRQ
