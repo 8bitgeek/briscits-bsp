@@ -155,7 +155,9 @@ vtable:
     .weak   USBWakeUp_IRQHandler
     .weak   USBHD_IRQHandler
 
+nmi_isr_handler:
 NMI_Handler:  1:  j default_interrupt_handler
+fault_isr_handler:
 HardFault_Handler:  1:  j default_interrupt_handler
 SysTick_Handler:  1:  j default_interrupt_handler
 SW_handler:  1:  j default_interrupt_handler
