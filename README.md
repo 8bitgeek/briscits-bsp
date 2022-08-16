@@ -110,11 +110,7 @@ continue
 ```
 ....or....
 ```
-riscv-unknown-elf-gdb ./main.elf
-target extended-remote localhost:3333
-load main.elf
-break main
-continue
+riscv-unknown-elf-gdb -x scripts/gdbinit
 ```
 
 ## Flash GD32VF103 MCU
