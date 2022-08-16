@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "gd32vf103_fwdgt.h": "c",
+        "rgb_led.h": "c"
+    }
+}

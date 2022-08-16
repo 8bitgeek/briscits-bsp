@@ -1,14 +1,14 @@
 
-CFLAGS_COMMON += -D_CARIBOU_RTOS_=1  -Wl,-ereset_handler 
+CFLAGS_COMMON += -D_BRISCITS_RTOS_=1  -Wl,-ereset_handler 
 
 # bsp
 include ${FEATURE_ROOT}/_common/_feature.mk
 
 # sources
-include ${SRC_ROOT}/caribou/_src.mk
+include ${SRC_ROOT}/briscits/_src.mk
 
 # # source containing main() function
-SRCS_CC += $(FEATURE_ROOT)/caribou/main.c
+SRCS_CC += $(FEATURE_ROOT)/briscits/main.c
 
 # # final build
 # include ${FEATURE_ROOT}/_common/build.mk

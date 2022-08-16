@@ -3,7 +3,7 @@
 CFLAGS_COMMON += $(INC)
 CFLAGS_COMMON += -D_${TARGET_CPP}_=1
 CFLAGS_COMMON += -DUSE_NATIVE_STDARG=1
-CFLAGS_COMMON += -DUSE_FULL_ASSERT=1 -D_CARIBOU_RTOS_=1
+CFLAGS_COMMON += -DUSE_FULL_ASSERT=1 -D_BRISCITS_RTOS_=1
 CFLAGS_COMMON += -Wall -Wno-unused-function -Wno-nonnull-compare -fno-builtin -Wno-unused-but-set-variable
 CFLAGS_COMMON += -fsingle-precision-constant -ffunction-sections -fdata-sections
 CFLAGS_COMMON += -Wno-double-promotion -Wno-attributes 

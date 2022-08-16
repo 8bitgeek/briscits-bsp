@@ -8,7 +8,7 @@ OPENOCD_TARGET 	= stm32f0x
 # LIBS += $(GCC_ROOT)$(GCC_LIB)/../../../../arm-none-eabi/lib/thumb/$(CORTEX_VER)/nofp/libm.a
 # LIBS += $(GCC_ROOT)$(GCC_LIB)/../../../../arm-none-eabi/lib/thumb/$(CORTEX_VER)/nofp/libstdc++_nano.a
 
-CFLAGS_COMMON += -DUSART_QUEUE_SZ=64 -DHSE_VALUE=8000000U -DCARIBOU_FLOAT=1 -DSTM32L431xx=1
+CFLAGS_COMMON += -DUSART_QUEUE_SZ=64 -DHSE_VALUE=8000000U -DBRISCITS_FLOAT=1 -DSTM32L431xx=1
 CFLAGS_COMMON += -fshort-enums -fsigned-char -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE) -mfloat-abi=$(MCU_FLOAT)
 CFLAGS_COMMON += -DDEBUG_USART=2 -DRS485_UART=1
 CFLAGS_COMMON += -DSERIAL_NO_BASE_ADDRESS=0x1FFFF7AC
