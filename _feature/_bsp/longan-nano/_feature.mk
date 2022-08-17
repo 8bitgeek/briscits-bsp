@@ -69,6 +69,6 @@ CFLAGS_COMMON += -DPRODUCT_HEARTBEAT_PERIOD=100
 CFLAGS_COMMON += -DMODBUS_THREAD_STK_SZ=2048
 
 # sources
-include ${SRC_ROOT}/_bsp/${TARGET}/_src.mk
+include ${SRC_ROOT}/_bsp/_board/${TARGET}/_src.mk
 
-include ${SRC_ROOT}/filesystem/_src.mk
+# include ${SRC_ROOT}/filesystem/_src.mk

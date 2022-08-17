@@ -1,5 +1,5 @@
 # bsp
-include ${FEATURE_ROOT}/caribou/_feature.mk
+include ${FEATURE_ROOT}/briscits/_feature.mk
 
 # sources
 include ${SRC_ROOT}/delay/_src.mk

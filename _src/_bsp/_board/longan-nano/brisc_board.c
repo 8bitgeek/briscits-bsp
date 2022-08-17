@@ -33,23 +33,33 @@ SOFTWARE.
 ******************************************************************************/
 #include <brisc_board.h>
 #include <brisc_thread.h>
-#include <xprintf.h>
+#include <rgb_led.h>
+#include <gd32vf103_usart.h>
+#include <gd32vf103_fwdgt.h>
+#include <gd32vf103_dbg.h>
 
 static unsigned char usart_in(void);
 static void usart_out(unsigned char ch);
 static void usart_config(uint32_t usart_periph);
 
-unsigned char usart_in(void)
+static unsigned char usart_in(void)
 {
     if ( usart_flag_get( USART0, USART_FLAG_RBNE ) )
         return ( usart_data_receive( USART0 ) & 0xFF );
     return 0;
 }
 
-void usart_out(unsigned char ch)
+static void usart_out(unsigned char ch)
 {
     b_thread_block_while( !usart_flag_get( USART0, USART_FLAG_TBE ) );
     usart_data_transmit( USART0, (uint8_t) ch );
+}
+
+extern int board_getchar( void )
+{
+    if ( usart_flag_get( USART0, USART_FLAG_RBNE ) )
+        return ( usart_data_receive( USART0 ) & 0xFF );
+    return -1;
 }
 
 static void usart_config(uint32_t usart_periph)
@@ -87,6 +97,8 @@ void spi_config(uint32_t spi_periph)
 
 void board_init( void ) 
 {
+    /* RCU CLOCKS */
+
     rcu_periph_clock_enable(RCU_GPIOA);
     rcu_periph_clock_enable(RCU_GPIOB);
     rcu_periph_clock_enable(RCU_GPIOC);
@@ -94,7 +106,11 @@ void board_init( void )
     rcu_periph_clock_enable(RCU_DMA0);
     rcu_periph_clock_enable(RCU_USART0);
     rcu_periph_clock_enable(RCU_SPI1);
+    rcu_periph_clock_enable(RCU_WWDGT);
 
+    /* DBG */
+
+    DBG_CTL |= DBG_FWDGT_HOLD;      /* hold fwdgt when debug halts cpu */
 
     /* RGB LEDx */
 
@@ -115,8 +131,8 @@ void board_init( void )
     gpio_init( GPIOA, GPIO_MODE_AF_PP,       GPIO_OSPEED_50MHZ, GPIO_PIN_9  );    /* connect port to USARTx_Tx */
     gpio_init( GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10 );    /* connect port to USARTx_Rx */
     usart_config( USART0 );
-    xdev_out(usart_out);
-    xdev_in(usart_in);
+    // xdev_out(usart_out);
+    // xdev_in(usart_in);
 
     /* SPI1 GPIO CS/PB12, SCK/PB13, MISO/PB14, MOSI/PB15 */
     gpio_init( GPIOB, GPIO_MODE_OUT_PP,      GPIO_OSPEED_50MHZ, GPIO_PIN_12 );
@@ -129,3 +145,33 @@ extern uint32_t board_clkfreq( void )
 {
     return SystemCoreClock;
 }
+
+extern bool board_wdg_setup( uint32_t ms)
+{
+    uint8_t prescaler_div;
+    int16_t reload_value;
+    if ( ms < 7 )
+    {
+        uint16_t ticks_per_ms = 4095 / 409;             // 10.01
+        prescaler_div = FWDGT_PSC_DIV4;
+        reload_value = ms * ticks_per_ms;
+    }
+    else
+    {
+        uint32_t ticks_per_ms = (4095*1000) / 26214;   // 0.156 * 1000 = 156
+        prescaler_div = FWDGT_PSC_DIV256;
+        reload_value = (ms * ticks_per_ms)/1000;
+    }
+    return fwdgt_config(reload_value,prescaler_div) == SUCCESS;
+}
+
+extern void board_wdg_enable( void )
+{
+    fwdgt_enable();
+}
+
+extern void board_wdg_reload( void )
+{
+    fwdgt_counter_reload();
+}
+
