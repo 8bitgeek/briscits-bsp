@@ -1,0 +1,6 @@
+target remote localhost:3333
+monitor gd32vf103.cpu arm semihosting enable
+load longan-nano.elf
+file longan-nano.elf
+break feature_main
+continue
