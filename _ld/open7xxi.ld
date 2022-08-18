@@ -31,6 +31,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
+ENTRY( briscits_reset_handler )
+
 __main_stack_size__     = 0x0600;
 __process_stack_size__  = 0x0600;
 

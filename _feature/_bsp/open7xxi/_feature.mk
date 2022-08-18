@@ -65,6 +65,6 @@ CFLAGS_COMMON += -DPRODUCT_DEBUG_SETTINGS=1
 ASFLAGS	+= -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE)
 
 # sources
-include ${SRC_ROOT}/_bsp/${TARGET}/_src.mk
+include ${SRC_ROOT}/_bsp/_board/${TARGET}/_src.mk
 
-include ${SRC_ROOT}/filesystem/_src.mk
+# include ${SRC_ROOT}/filesystem/_src.mk

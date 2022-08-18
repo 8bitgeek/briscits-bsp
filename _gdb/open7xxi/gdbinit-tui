@@ -7,8 +7,8 @@ end
 layout split
 winheight src 24
 target remote localhost:3333
-monitor gd32vf103.cpu arm semihosting enable
-load openzxxi.elf
-file openzxxi.elf
-tbreak feature_main
+monitor arm semihosting enable
+load open7xxi.elf
+file open7xxi.elf
+tbreak briscits_reset_handler
 continue

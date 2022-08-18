@@ -37,10 +37,27 @@ SOFTWARE.
 // Pre-defined memory locations for program initialization.
 extern uint32_t _etext, _sdata, _edata, _sbss, _ebss;
 
+void __memcpy(void* dst, void* src, register size_t size)
+{
+    register uint8_t* p_dst = (uint8_t*)dst;
+    register uint8_t* p_src = (uint8_t*)src;
+
+    while ( size-- )
+        *p_dst++ = *p_src++;
+}
+
+void __memset(void* dst, uint8_t ch, register size_t size )
+{
+    register uint8_t* p_dst = (uint8_t*)dst;
+
+    while ( size-- )
+        *p_dst++ = ch;
+}
+
 void _bss_init( void ) 
 {
     // Copy initialized data from .sidata (Flash) to .data (RAM)
-    memcpy( &_sdata, &_etext, ( ( char* )&_edata - ( char* )&_sdata ) );
+    __memcpy( &_sdata, &_etext, ( ( char* )&_edata - ( char* )&_sdata ) );
     // Clear the .bss RAM section.
-    memset( &_sbss, 0x00, ( ( char* )&_ebss - ( char* )&_sbss ) );
+    __memset( &_sbss, 0x00, ( ( char* )&_ebss - ( char* )&_sbss ) );
 }
