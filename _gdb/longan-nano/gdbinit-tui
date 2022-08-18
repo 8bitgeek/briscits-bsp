@@ -6,9 +6,9 @@ define hook-stop
 end
 layout split
 winheight src 24
-#target extended-remote localhost:3333
 target remote localhost:3333
-load main.elf
-file main.elf
-break main
+monitor gd32vf103.cpu arm semihosting enable
+load longan-nano.elf
+file longan-nano.elf
+tbreak feature_main
 continue

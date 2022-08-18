@@ -33,14 +33,6 @@ SOFTWARE.
 ******************************************************************************/
 #include <brisc_thread.h>
 
-#if !defined(HW_WD_TO)
-	#define HW_WD_TO        (100)
-#endif 
-
-#if !defined(SW_WD_TO)
-	#define SW_WD_TO        (50)
-#endif
-
 #if !defined(THREAD_STK_SZ)
 	#define THREAD_STK_SZ	(1024*4)
 #endif
@@ -49,48 +41,23 @@ static uint32_t	feature_stack[ THREAD_STK_SZ/sizeof(uint32_t) ];
 static int 		feature_thread_handle  = (-1);
 static int 		main_thread_handle  = (-1);
 
-static void 	watchdog_cb(int id);
-static void 	blocking_cb(void);
-
 extern void __attribute__((weak)) feature_main( void* arg );
 extern void __attribute__((weak)) board_idle( void );
 
 extern int main(void)
 {
-   if ( (main_thread_handle  = b_thread_init( "main" )) >= 0 )
+    if ( (main_thread_handle  = b_thread_init( "main" )) >= 0 )
     {
-        watchdog_setup(HW_WD_TO);
-        watchdog_enable();
-        b_thread_set_block_fn(blocking_cb);
-        watchdog_set_callback_fn(watchdog_cb);
-
-        watchdog_thread_setup( main_thread_handle, SW_WD_TO );
-        watchdog_thread_enable( main_thread_handle );
-
         if ( (feature_thread_handle = b_thread_create( "feature_main", feature_main, NULL, feature_stack, THREAD_STK_SZ )) >= 0)
         {
-            watchdog_thread_setup( feature_thread_handle, SW_WD_TO );
-            watchdog_thread_enable( feature_thread_handle );
-            
             b_thread_start( feature_thread_handle );
-            board_idle();
+            for(;;)
+            {
+                board_idle();
+            }
         }
     }
 	return 0;
-}
-
-static void watchdog_cb(int id)
-{
-    xprintf( "w/d t/o %d\n", id );
-}
-
-static void blocking_cb(void)
-{
-    int id = b_thread_current_id();
-    if ( id == 0 )
-        watchdog_thread_reload( 0 );
-    else
-        watchdog_thread_reload( id );
 }
 
 void* _sbrk ( int incr )
@@ -102,13 +69,13 @@ void* _sbrk ( int incr )
 
 void feature_main( void* arg )
 {
-    for(;;);
+    for(;;)
+    {
+        b_thread_yield();
+    }
 }
 
 void board_idle( void )
 {
-    for(;;)
-	{
-		b_thread_yield();
-	}
+	b_thread_yield();
 }

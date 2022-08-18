@@ -6,7 +6,7 @@ include ${FEATURE_ROOT}/_common/_feature.mk
 
 # sources
 include ${SRC_ROOT}/briscits/_src.mk
-include ${SRC_ROOT}/watchdog/_src.mk
+# include ${SRC_ROOT}/watchdog/_src.mk
 
 # # source containing main() function
 SRCS_CC += $(FEATURE_ROOT)/briscits/main.c
