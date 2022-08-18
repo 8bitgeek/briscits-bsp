@@ -1,0 +1,6 @@
+target remote localhost:3333
+monitor gd32vf103.cpu arm semihosting enable
+load open7xxi.elf
+file open7xxi.elf
+break feature_main
+continue
