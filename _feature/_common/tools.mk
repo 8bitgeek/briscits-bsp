@@ -25,5 +25,5 @@ AS=$(GCC_PREFIX)as
 CP=$(GCC_PREFIX)objcopy
 OD=$(GCC_PREFIX)objdump
 SZ=$(GCC_PREFIX)size
-LS=${COOK_PROJECT}/ld/${TARGET}.ld 
+LS=${COOK_PROJECT}/_ld/${TARGET}.ld 
 OC=${OPENOCD_PREFIX}openocd
