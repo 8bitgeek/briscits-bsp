@@ -1,0 +1,6 @@
+target remote localhost:3333
+monitor arm semihosting enable
+load bluepill.elf
+file bluepill.elf
+break feature_main
+continue

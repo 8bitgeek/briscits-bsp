@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2021 Mike Sharkey
+Copyright (c) 2022 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,31 +32,19 @@ SOFTWARE.
 
 ******************************************************************************/
 #include <brisc_board.h>
-#include <string.h>
+#include <core_cm3.h>
 
-typedef void (*cpp_unit_ptr_t)(void);
-
-extern uint32_t __init_array_start, __init_array_end,
-                __fini_array_start, __fini_array_end;
-
-void _cpp_init( void )
+void _systick_init( void ) 
 {
-    void* vfp = &__init_array_start;
-    while ( vfp != (void*)&__init_array_end )
-    {
-        cpp_unit_ptr_t cfp = (cpp_unit_ptr_t)*(uint32_t*)vfp;
-        cfp();
-        vfp += sizeof(void*);
-    }
-}
+    /* number of ticks between interrupts */
+	uint32_t ticks = SystemCoreClock / 1000;	
 
-void _cpp_deinit( void )
-{
-    void* vfp = &__fini_array_start;
-    while ( vfp != (void*)&__fini_array_end )
-    {
-        cpp_unit_ptr_t cfp = (cpp_unit_ptr_t)*(uint32_t*)vfp;
-        cfp();
-        vfp += sizeof(void*);
-    }
+    /* set reload register */
+	SysTick->LOAD  = (ticks & SysTick_LOAD_RELOAD_Msk) - 1;	
+
+    /* Load the SysTick Counter Value */
+	SysTick->VAL   = 0;											
+	SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
+					SysTick_CTRL_TICKINT_Msk   |
+					SysTick_CTRL_ENABLE_Msk;	
 }

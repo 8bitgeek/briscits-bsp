@@ -83,7 +83,7 @@ briscits_reset_handler:
 		blx		r2
 
 		// Initialize the board
-		ldr		r2, =board_init
+		ldr		r2, = board_init
 		blx		r2
 
 start:

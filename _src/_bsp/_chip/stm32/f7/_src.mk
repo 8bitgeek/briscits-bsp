@@ -1,4 +1,4 @@
-# gd32vf103xb
+# stm32f7xx
 
 SRC_CHIP_STM32F7=${SRC_ROOT}/_bsp/_chip/stm32/f7
 INC += -I $(SRC_CHIP_STM32F7)

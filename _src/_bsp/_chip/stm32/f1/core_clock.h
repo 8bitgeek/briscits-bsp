@@ -31,32 +31,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
+#ifndef _CORE_CLOCK_H_
+#define _CORE_CLOCK_H_
+
 #include <brisc_board.h>
-#include <string.h>
 
-typedef void (*cpp_unit_ptr_t)(void);
-
-extern uint32_t __init_array_start, __init_array_end,
-                __fini_array_start, __fini_array_end;
-
-void _cpp_init( void )
+#ifdef __cplusplus
+extern "C"
 {
-    void* vfp = &__init_array_start;
-    while ( vfp != (void*)&__init_array_end )
-    {
-        cpp_unit_ptr_t cfp = (cpp_unit_ptr_t)*(uint32_t*)vfp;
-        cfp();
-        vfp += sizeof(void*);
-    }
-}
+#endif
 
-void _cpp_deinit( void )
-{
-    void* vfp = &__fini_array_start;
-    while ( vfp != (void*)&__fini_array_end )
-    {
-        cpp_unit_ptr_t cfp = (cpp_unit_ptr_t)*(uint32_t*)vfp;
-        cfp();
-        vfp += sizeof(void*);
-    }
+extern void _core_clock_init( void );
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif
