@@ -34,11 +34,14 @@ SOFTWARE.
 #include <brisc_board.h>
 #include <brisc_thread.h>
 #include <xprintf.h>
-#include <stm32f10x.h>
-
 
 void board_init( void ) 
 {
+
+	gpio_set_mode( GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13 );
+
+	gpio_set(BOARD_GPIO_LED);
+	
 	cpu_int_enable();
 }
 

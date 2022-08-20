@@ -32,7 +32,6 @@ SOFTWARE.
 
 ******************************************************************************/
 #include <board.h>
-#include <delay.h>
 #include <led.h>
 
 static led_t led;

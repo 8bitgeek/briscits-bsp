@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2022 Mike Sharkey
+Copyright (c) 2021 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,24 +31,53 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _BRISC_BOARD_H_
-#define _BRISC_BOARD_H_
+#ifndef BRISC_LED_H_
+#define BRISC_LED_H_
 
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
+#include <board.h>
+#include <hw_gpio.h>
+#include <jiffies.h>
 
-#include <stm32f10x.h>
-#include <libopencm3/cm3/common.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/rcc.h>
-#include <core_cm3.h>
-#include <cpu.h>
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-#define BOARD_GPIO_LED    GPIOC,GPIO13
+#define LED_BLINK_FOREVER   0xFF
 
-extern void     board_init( void );
-extern uint32_t board_clkfreq( void );
-extern void peripheral_clock_setup( void );
+typedef struct _led_t_
+{
+    hw_gpio_t*      gpio;
+    bool            inverted;
+    uint8_t         blink_count;
+    uint16_t        blink_rate; 
+    #if defined(__BARE_METAL__)
+        uint32_t        blink_start;
+    #else
+        jiffies_t  blink_start;
+    #endif
+} led_t;
+
+
+extern void led_setup   (led_t* led, hw_gpio_t* gpio, bool inverted);
+extern void led_service (led_t* led);
+extern void led_on      (led_t* led);
+extern void led_off     (led_t* led);
+extern void led_toggle  (led_t* led);
+extern bool led_state   (led_t* led);
+extern void led_set     (led_t* led, bool on);
+extern void led_reset   (led_t* led);
+
+/****************************************************************************
+ * @brief Blink the led for a pre determined period and rate.
+ * @param led An initialized led structure see: @ref led_setup
+ * @param count Number of cycles to blink, or LED_BLINK_FOREVER 
+ * @param rate Blink frequency in milliseconds
+****************************************************************************/
+extern void led_blink   (led_t* led, uint8_t count, uint16_t rate);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
