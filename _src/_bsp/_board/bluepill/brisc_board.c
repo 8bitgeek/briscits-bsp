@@ -33,7 +33,8 @@ SOFTWARE.
 ******************************************************************************/
 #include <brisc_board.h>
 #include <brisc_thread.h>
-#include <xprintf.h>
+
+gpio_t  gpio_led0 = { GPIOC, GPIO13 };
 
 void board_init( void ) 
 {
@@ -44,7 +45,6 @@ void board_init( void )
 	rcc_periph_clock_enable(RCC_GPIOB);
 	rcc_periph_clock_enable(RCC_GPIOC);
 	rcc_periph_clock_enable(RCC_GPIOD);
-
 	rcc_periph_clock_enable(RCC_DMA1);
 	rcc_periph_clock_enable(RCC_SRAM);
 	rcc_periph_clock_enable(RCC_CRC);
@@ -55,11 +55,13 @@ void board_init( void )
 	rcc_periph_clock_enable(RCC_USB);
 	rcc_periph_clock_enable(RCC_TIM8);
 
-
 	gpio_set_mode( GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13 );
-	gpio_set(BOARD_GPIO_LED);
+
+	b_gpio_set(&gpio_led0);
 
 	systick_set_frequency(HZ, board_clkfreq());
+	systick_interrupt_enable();
+	systick_counter_enable();
 
 	cpu_int_enable();
 }

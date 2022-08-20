@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2022 Mike Sharkey
+Copyright (c) 2021 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,30 +31,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _BRISC_BOARD_H_
-#define _BRISC_BOARD_H_
+#ifndef _B_GPIO_H_
+#define _B_GPIO_H_
 
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
-
-#include <libopencm3/cm3/common.h>
-#include <libopencm3/cm3/systick.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/rcc.h>
-#include <cpu.h>
-
-#include <b_gpio.h>
+#include <gpio_t.h>
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-gpio_t  gpio_led0;
-
-extern void     board_init( void );
-extern uint32_t board_clkfreq( void );
+extern void b_gpio_toggle( gpio_t* gpio );
+extern void b_gpio_set( gpio_t* gpio );
+extern void b_gpio_reset( gpio_t* gpio );
+extern bool b_gpio_state( gpio_t* gpio );
+extern void b_gpio_write( gpio_t* gpio, bool state);
 
 #ifdef __cplusplus
 }

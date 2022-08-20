@@ -34,9 +34,9 @@ SOFTWARE.
 #ifndef BRISC_LED_H_
 #define BRISC_LED_H_
 
-#include <board.h>
-#include <hw_gpio.h>
-#include <jiffies.h>
+#include <brisc_board.h>
+#include <brisc_thread.h>
+#include <b_gpio.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -47,19 +47,15 @@ extern "C"
 
 typedef struct _led_t_
 {
-    hw_gpio_t*      gpio;
+    gpio_t*      gpio;
     bool            inverted;
     uint8_t         blink_count;
     uint16_t        blink_rate; 
-    #if defined(__BARE_METAL__)
-        uint32_t        blink_start;
-    #else
-        jiffies_t  blink_start;
-    #endif
+    brisc_systick_t blink_start;
 } led_t;
 
 
-extern void led_setup   (led_t* led, hw_gpio_t* gpio, bool inverted);
+extern void led_setup   (led_t* led, gpio_t* gpio, bool inverted);
 extern void led_service (led_t* led);
 extern void led_on      (led_t* led);
 extern void led_off     (led_t* led);

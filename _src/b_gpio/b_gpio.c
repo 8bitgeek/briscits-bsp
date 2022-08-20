@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2022 Mike Sharkey
+Copyright (c) 2021 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,33 +31,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _BRISC_BOARD_H_
-#define _BRISC_BOARD_H_
-
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
-
-#include <libopencm3/cm3/common.h>
-#include <libopencm3/cm3/systick.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/rcc.h>
-#include <cpu.h>
-
 #include <b_gpio.h>
+#include <libopencm3/stm32/gpio.h>
 
-#ifdef __cplusplus
-extern "C"
+extern void b_gpio_toggle( gpio_t* gpio )
 {
-#endif
-
-gpio_t  gpio_led0;
-
-extern void     board_init( void );
-extern uint32_t board_clkfreq( void );
-
-#ifdef __cplusplus
+	gpio_toggle(gpio->gpioport,gpio->gpios);
 }
-#endif
 
-#endif
+extern void b_gpio_set( gpio_t* gpio )
+{
+	gpio_set(gpio->gpioport,gpio->gpios);
+}
+
+extern void b_gpio_reset( gpio_t* gpio )
+{
+	gpio_clear(gpio->gpioport,gpio->gpios);
+}
+
+extern bool b_gpio_state( gpio_t* gpio )
+{
+	return gpio_get(gpio->gpioport,gpio->gpios) ? true : false;
+}
+
+extern void b_gpio_write( gpio_t* gpio, bool state)
+{
+	if ( state )
+		gpio_set(gpio->gpioport,gpio->gpios);
+	else 
+		gpio_clear(gpio->gpioport,gpio->gpios);
+}
