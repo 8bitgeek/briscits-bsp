@@ -38,8 +38,10 @@ gpio_t  gpio_led0 = { GPIOC, GPIO13 };
 
 void board_init( void ) 
 {
+	/* Configure the system clock */
 	rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
 
+	/* Enables peripheral clocks */
 	rcc_periph_clock_enable(RCC_AFIO);
 	rcc_periph_clock_enable(RCC_GPIOA);
 	rcc_periph_clock_enable(RCC_GPIOB);
@@ -55,18 +57,23 @@ void board_init( void )
 	rcc_periph_clock_enable(RCC_USB);
 	rcc_periph_clock_enable(RCC_TIM8);
 
+	/* Configur pins */
 	gpio_set_mode( GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13 );
 
+	/* Set initial gpio pin states */
 	b_gpio_set(&gpio_led0);
 
+	/* Configure the systick interrupt to generate systick interrupts at 1000 Hz */
 	systick_set_frequency(HZ, board_clkfreq());
 	systick_interrupt_enable();
 	systick_counter_enable();
 
+	/* Enable global CPU interrupts */
 	cpu_int_enable();
 }
 
 extern uint32_t board_clkfreq( void )
 {
+	/** @@NOTE Can we retrieve this from the rcc module? */
     return 72000000;
 }
