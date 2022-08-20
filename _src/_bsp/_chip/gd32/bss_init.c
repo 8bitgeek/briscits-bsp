@@ -44,3 +44,4 @@ void _bss_init( void )
     // Clear the .bss RAM section.
     memset( &_sbss, 0x00, ( ( void* )&_ebss - ( void* )&_sbss ) );
 }
+

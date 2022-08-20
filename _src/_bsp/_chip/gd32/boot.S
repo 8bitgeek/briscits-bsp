@@ -101,6 +101,7 @@ in_address_space:
     // Initialize the board
     call    board_init
  
+    csrs CSR_MSTATUS, MSTATUS_MIE
     // Call 'main(0,0)' (.data/.bss sections initialized there)
     
     li      a0, 0
