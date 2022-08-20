@@ -31,8 +31,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <board.h>
-#include <delay.h>
+#include <brisc_board.h>
 #include <led.h>
 
 static led_t led;
