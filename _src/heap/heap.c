@@ -37,9 +37,9 @@ SOFTWARE.
 
 #define	ALL_BITS					0xFFFFFFFF
 #if !defined(HEAP_BLOCK_SIZE)
-	#define	HEAP_BLOCK_SIZE			32				/** The allocation block size in bytes */
+	#define	HEAP_BLOCK_SIZE			32						/**<< The allocation block size in bytes */
 #endif
-#define HEAP_BLOCKS_PER_PAGE		32				/** Number of blocks per bitmap page */
+#define HEAP_BLOCKS_PER_PAGE		(sizeof(uint32_t)*8)	/**<< Number of blocks per bitmap page */
 #define HEAP_BYTES_PER_PAGE			(HEAP_BLOCKS_PER_PAGE * HEAP_BLOCK_SIZE)
 
 #define isFree(heap_state,block)	(!get_bitmap_bit(heap_state,block,heap_state->heap_free_bitmap))
@@ -61,18 +61,8 @@ SOFTWARE.
 static int32_t locate_free(brisc_heap_state_t* heap_state, int32_t blocks);
 static void* allocate(brisc_heap_state_t* heap_state, register int32_t block, register int32_t blocks);
 
-#if BRISC_HEAP_MUTEX
-	#if PRODUCT_HEAP_DEBUG
-		BRISC_MUTEX_DECL_F(malloc_mutex,BRISC_MUTEX_F_RECURSIVE);
-	#else
-		BRISC_MUTEX_DECL_F(malloc_mutex,BRISC_MUTEX_F_NOYIELD);
-	#endif
-	#define BRISC_MALLOC_LOCK()		brisc_mutex_lock(&malloc_mutex,0);
-	#define BRISC_MALLOC_UNLOCK()	brisc_mutex_unlock(&malloc_mutex);
-#else
-	#define BRISC_MALLOC_LOCK()		b_thread_lock();
-	#define BRISC_MALLOC_UNLOCK()	b_thread_unlock();
-#endif
+#define BRISC_MALLOC_LOCK()		b_thread_lock();
+#define BRISC_MALLOC_UNLOCK()	b_thread_unlock();
 
 //#define BITMAP_HEAP_DEBUG	1
 #if PRODUCT_HEAP_DEBUG
