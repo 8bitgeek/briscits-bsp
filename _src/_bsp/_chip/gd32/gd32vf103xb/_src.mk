@@ -1,0 +1,8 @@
+# gd32vf103xb
+
+SRC_CHIP_GD32VF103XB=${SRC_ROOT}/_bsp/_chip/gd32/gd32vf103xb
+INC += -I $(SRC_CHIP_GD32VF103XB)
+
+SRCS_AS += $(SRC_CHIP_GD32VF103XB)/vectors.S
+
+include ${SRC_CHIP_GD32VF103XB}/../_src.mk

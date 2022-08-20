@@ -1,3 +1,6 @@
-[submodule "briscits"]
-	path = briscits
+[submodule "_src/libopencm3"]
+	path = _src/libopencm3
+	url = https://github.com/8bitgeek/libopencm3.git
+[submodule "_src/briscits"]
+	path = _src/briscits
 	url = https://github.com/8bitgeek/briscits.git

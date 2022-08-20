@@ -1,0 +1,6 @@
+target remote localhost:3333
+monitor arm semihosting enable
+load open7xxi.elf
+file open7xxi.elf
+break feature_main
+continue
