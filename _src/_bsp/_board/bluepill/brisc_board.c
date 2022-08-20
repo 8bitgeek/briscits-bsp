@@ -33,40 +33,40 @@ SOFTWARE.
 ******************************************************************************/
 #include <brisc_board.h>
 #include <brisc_thread.h>
-#include <xprintf.h>
+
+gpio_t  gpio_led0 = { GPIOC, GPIO13 };
 
 void board_init( void ) 
 {
+	rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
+
+	rcc_periph_clock_enable(RCC_AFIO);
+	rcc_periph_clock_enable(RCC_GPIOA);
+	rcc_periph_clock_enable(RCC_GPIOB);
+	rcc_periph_clock_enable(RCC_GPIOC);
+	rcc_periph_clock_enable(RCC_GPIOD);
+	rcc_periph_clock_enable(RCC_DMA1);
+	rcc_periph_clock_enable(RCC_SRAM);
+	rcc_periph_clock_enable(RCC_CRC);
+	rcc_periph_clock_enable(RCC_USART1);
+	rcc_periph_clock_enable(RCC_USART2);
+	rcc_periph_clock_enable(RCC_WWDG);
+	rcc_periph_clock_enable(RCC_PWR);
+	rcc_periph_clock_enable(RCC_USB);
+	rcc_periph_clock_enable(RCC_TIM8);
 
 	gpio_set_mode( GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13 );
 
-	gpio_set(BOARD_GPIO_LED);
-	
+	b_gpio_set(&gpio_led0);
+
+	systick_set_frequency(HZ, board_clkfreq());
+	systick_interrupt_enable();
+	systick_counter_enable();
+
 	cpu_int_enable();
 }
 
 extern uint32_t board_clkfreq( void )
 {
-    return SystemCoreClock;
+    return 72000000;
 }
-
-extern void peripheral_clock_setup( void )
-{
-	RCC->AHBENR |=	(	RCC_AHBENR_DMA1EN		|
-						RCC_AHBENR_SRAMEN		|
-						RCC_AHBENR_CRCEN		);
-
-	RCC->APB1ENR |= (	RCC_APB1ENR_USART2EN	|
-						RCC_APB1ENR_WWDGEN		|
-						RCC_APB1ENR_PWREN		|
-						RCC_APB1ENR_TIM3EN		|
-						RCC_APB1ENR_USBEN		);
-
-	RCC->APB2ENR |= (	RCC_APB2ENR_USART1EN	|
-						RCC_APB2ENR_AFIOEN		|
-						RCC_APB2ENR_IOPAEN		|
-						RCC_APB2ENR_IOPBEN		|
-						RCC_APB2ENR_IOPCEN		|
-						RCC_APB2ENR_IOPDEN		);
-}
-

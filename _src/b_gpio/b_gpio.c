@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2022 Mike Sharkey
+Copyright (c) 2021 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,20 +31,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_board.h>
-#include <core_cm3.h>
+#include <b_gpio.h>
+#include <libopencm3/stm32/gpio.h>
 
-void _systick_init( void ) 
+extern void b_gpio_toggle( gpio_t* gpio )
 {
-    /* number of ticks between interrupts */
-	uint32_t ticks = SystemCoreClock / 1000;	
+	gpio_toggle(gpio->gpioport,gpio->gpios);
+}
 
-    /* set reload register */
-	SysTick->LOAD  = (ticks & SysTick_LOAD_RELOAD_Msk) - 1;	
+extern void b_gpio_set( gpio_t* gpio )
+{
+	gpio_set(gpio->gpioport,gpio->gpios);
+}
 
-    /* Load the SysTick Counter Value */
-	SysTick->VAL   = 0;											
-	SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
-					SysTick_CTRL_TICKINT_Msk   |
-					SysTick_CTRL_ENABLE_Msk;	
+extern void b_gpio_reset( gpio_t* gpio )
+{
+	gpio_clear(gpio->gpioport,gpio->gpios);
+}
+
+extern bool b_gpio_state( gpio_t* gpio )
+{
+	return gpio_get(gpio->gpioport,gpio->gpios) ? true : false;
+}
+
+extern void b_gpio_write( gpio_t* gpio, bool state)
+{
+	if ( state )
+		gpio_set(gpio->gpioport,gpio->gpios);
+	else 
+		gpio_clear(gpio->gpioport,gpio->gpios);
 }

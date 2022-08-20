@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2022 Mike Sharkey
+Copyright (c) 2021 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,42 +31,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_board.h>
-#include <led.h>
-#include <button.h>
+#ifndef _B_GPIO_H_
+#define _B_GPIO_H_
 
-static led_t 	led;
-static button_t button;
+#include <gpio_t.h>
 
-static void button_callback( button_event_t button_event );
-
-extern void feature_main(void* arg)
+#ifdef __cplusplus
+extern "C"
 {
-	led_setup(&led,&gpio_led0,LED0_POLARITY);
-	button_setup(&button,&gpio_btn0,BTN0_POLARITY,button_callback);
+#endif
 
-	for( ;; )
-	{
-		led_service(&led);
-		button_service(&button);
-	}
-}
+extern void b_gpio_toggle( gpio_t* gpio );
+extern void b_gpio_set( gpio_t* gpio );
+extern void b_gpio_reset( gpio_t* gpio );
+extern bool b_gpio_state( gpio_t* gpio );
+extern void b_gpio_write( gpio_t* gpio, bool state);
 
-static void button_callback(button_event_t button_event)
-{
-	switch ( button_event)
-	{
-		case button_down:
-			led_on(&led);
-			break;
-		case button_up:
-			led_off(&led);
-			break;
-		case button_held:
-			led_blink(&led,48,32);
-			break;
-		case button_double_click:
-			led_blink(&led,8,128);
-			break;
-	}
+#ifdef __cplusplus
 }
+#endif
+
+#endif

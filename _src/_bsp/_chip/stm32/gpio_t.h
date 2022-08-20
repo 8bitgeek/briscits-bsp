@@ -31,17 +31,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _CORE_CLOCK_H_
-#define _CORE_CLOCK_H_
+#ifndef _GPIO_T_H_
+#define _GPIO_T_H_
 
-#include <brisc_board.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-extern void _core_clock_init( void );
+typedef struct _gpio_t_
+{
+    uint32_t gpioport;
+    uint16_t gpios;
+} gpio_t;
 
 #ifdef __cplusplus
 }

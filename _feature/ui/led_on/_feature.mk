@@ -2,7 +2,6 @@
 include ${FEATURE_ROOT}/briscits/_feature.mk
 
 # sources
-include ${SRC_ROOT}/delay/_src.mk
 include ${SRC_ROOT}/led/_src.mk
 
 # source containing main() function
