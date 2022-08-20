@@ -72,23 +72,23 @@ briscits_reset_handler:
 		ldr		r2, =_bss_init
 		blx		r2
 
+		@ // Initialize the core clock
+		@ ldr		r2, =_core_clock_init
+		@ blx		r2
+
+		// Initialize the board
+		ldr		r2, = board_init
+		blx		r2
+
 		// initialize the heap
 		ldr 	r0, =__heap_start__
 		ldr		r1, =__heap_end__
 		ldr		r2, =brisc_heap_init
 		blx		r2
 	
-		// Initialize the core clock
-		ldr		r2, =_core_clock_init
-		blx		r2
-
-		// Initialize the systick timer
-		ldr		r2, =_systick_init
-		blx		r2
-
-		// Initialize the board
-		ldr		r2, = board_init
-		blx		r2
+		@ // Initialize the systick timer
+		@ ldr		r2, =_systick_init
+		@ blx		r2
 
 start:
 		// Jump to main

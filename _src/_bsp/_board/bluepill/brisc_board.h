@@ -38,17 +38,15 @@ SOFTWARE.
 #include <stddef.h>
 #include <stdbool.h>
 
-#include <stm32f10x.h>
 #include <libopencm3/cm3/common.h>
+#include <libopencm3/cm3/systick.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
-#include <core_cm3.h>
 #include <cpu.h>
 
 #define BOARD_GPIO_LED    GPIOC,GPIO13
 
 extern void     board_init( void );
 extern uint32_t board_clkfreq( void );
-extern void peripheral_clock_setup( void );
 
 #endif
