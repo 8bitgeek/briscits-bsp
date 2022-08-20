@@ -38,7 +38,7 @@ SOFTWARE.
 
 static bool mcu_clock_setup_extern( void );
 static void mcu_clock_setup( void );
-static void peripheral_clock_setup( void );
+// static void peripheral_clock_setup( void );
 
 extern void _core_clock_init( void )
 {
@@ -150,9 +150,9 @@ static void mcu_clock_setup( void )
 	SystemCoreClockUpdate();
 }
 
-static void peripheral_clock_setup( void )
-{
-	RCC->AHBENR		|=	RCC_AHBENR_CLOCKS;
-	RCC->APB1ENR 	|= 	RCC_APB1ENR_CLOCKS;
-	RCC->APB2ENR 	|= 	RCC_APB2ENR_CLOCKS;
-}
+// static void peripheral_clock_setup( void )
+// {
+// 	RCC->AHBENR		|=	RCC_AHBENR_CLOCKS;
+// 	RCC->APB1ENR 	|= 	RCC_APB1ENR_CLOCKS;
+// 	RCC->APB2ENR 	|= 	RCC_APB2ENR_CLOCKS;
+// }

@@ -124,4 +124,4 @@ CFLAGS_COMMON += -DPRODUCT_DEBUG_SETTINGS=1
 CFLAGS_COMMON += -DPRODUCT_THREAD_NORMAL_PRIO=1
 
 # sources
-include ${SRC_ROOT}/_bsp/${TARGET}/_src.mk
+include ${SRC_ROOT}/_bsp/_board/${TARGET}/_src.mk

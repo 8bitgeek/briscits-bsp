@@ -8,7 +8,7 @@ CFLAGS_COMMON += -Wall -Wno-unused-function -Wno-nonnull-compare -fno-builtin -W
 CFLAGS_COMMON += -fsingle-precision-constant -ffunction-sections -fdata-sections
 CFLAGS_COMMON += -Wno-double-promotion -Wno-attributes 
 CFLAGS_COMMON += -Wfloat-conversion 
-CFLAGS_COMMON += -nostartfiles -nostdlib -c
+CFLAGS_COMMON += -nostartfiles -nostdlib 
 CFLAGS_COMMON += -c
 
 

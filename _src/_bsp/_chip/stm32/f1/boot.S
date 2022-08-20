@@ -34,6 +34,7 @@ SOFTWARE.
    		.syntax unified
 		.section .init, "ax"
 
+		.extern	brisc_heap_init
 		.global _bss_init
 		.global _cpp_init		
 		.global _cpp_deinit		
@@ -49,6 +50,7 @@ SOFTWARE.
 		.global BusFault_IRQ_Handler
 		.global _hard_fault
 		.global default_interrupt_handler
+		
 		.global briscits_reset_handler
 		.type	briscits_reset_handler, %function
 		.code   16
@@ -70,10 +72,12 @@ briscits_reset_handler:
 		ldr		r2, =_bss_init
 		blx		r2
 
-		// Call constructors
-		ldr		r2, =_cpp_init
+		// initialize the heap
+		ldr 	r0, =__heap_start__
+		ldr		r1, =__heap_end__
+		ldr		r2, =brisc_heap_init
 		blx		r2
-
+	
 		// Initialize the core clock
 		ldr		r2, =_core_clock_init
 		blx		r2

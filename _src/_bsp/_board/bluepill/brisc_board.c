@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2021 Mike Sharkey
+Copyright (c) 2022 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,36 +32,38 @@ SOFTWARE.
 
 ******************************************************************************/
 #include <brisc_board.h>
-#include <string.h>
+#include <brisc_thread.h>
+#include <xprintf.h>
+#include <stm32f10x.h>
 
-// Pre-defined memory locations for program initialization.
-extern uint32_t _etext, _sdata, _edata, _sbss, _ebss;
 
-void *memcpy(void *dest, const void *src, size_t n)
+void board_init( void ) 
 {
-    register uint8_t* p_dst = (uint8_t*)dest;
-    register uint8_t* p_src = (uint8_t*)src;
-
-    while ( n-- )
-        *p_dst++ = *p_src++;
-    
-    return dest;
+	cpu_int_enable();
 }
 
-void *memset(void *s, int c, size_t n)
+extern uint32_t board_clkfreq( void )
 {
-    register uint8_t* p_dst = (uint8_t*)s;
-
-    while ( n-- )
-        *p_dst++ = c;
-
-    return s;
+    return SystemCoreClock;
 }
 
-void _bss_init( void ) 
+extern void peripheral_clock_setup( void )
 {
-    // Copy initialized data from .sidata (Flash) to .data (RAM)
-    memcpy( &_sdata, &_etext, ( ( char* )&_edata - ( char* )&_sdata ) );
-    // Clear the .bss RAM section.
-    memset( &_sbss, 0x00, ( ( char* )&_ebss - ( char* )&_sbss ) );
+	RCC->AHBENR |=	(	RCC_AHBENR_DMA1EN		|
+						RCC_AHBENR_SRAMEN		|
+						RCC_AHBENR_CRCEN		);
+
+	RCC->APB1ENR |= (	RCC_APB1ENR_USART2EN	|
+						RCC_APB1ENR_WWDGEN		|
+						RCC_APB1ENR_PWREN		|
+						RCC_APB1ENR_TIM3EN		|
+						RCC_APB1ENR_USBEN		);
+
+	RCC->APB2ENR |= (	RCC_APB2ENR_USART1EN	|
+						RCC_APB2ENR_AFIOEN		|
+						RCC_APB2ENR_IOPAEN		|
+						RCC_APB2ENR_IOPBEN		|
+						RCC_APB2ENR_IOPCEN		|
+						RCC_APB2ENR_IOPDEN		);
 }
+

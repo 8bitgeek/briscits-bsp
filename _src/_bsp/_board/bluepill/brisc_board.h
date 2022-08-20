@@ -10,7 +10,7 @@
                             
 MIT License
 
-Copyright (c) 2021 Mike Sharkey
+Copyright (c) 2022 Mike Sharkey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,37 +31,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#include <brisc_board.h>
-#include <string.h>
+#ifndef _BRISC_BOARD_H_
+#define _BRISC_BOARD_H_
 
-// Pre-defined memory locations for program initialization.
-extern uint32_t _etext, _sdata, _edata, _sbss, _ebss;
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 
-void *memcpy(void *dest, const void *src, size_t n)
-{
-    register uint8_t* p_dst = (uint8_t*)dest;
-    register uint8_t* p_src = (uint8_t*)src;
+#include <stm32f10x.h>
+#include <core_cm3.h>
+#include <cpu.h>
 
-    while ( n-- )
-        *p_dst++ = *p_src++;
-    
-    return dest;
-}
+extern void     board_init( void );
+extern uint32_t board_clkfreq( void );
+extern void peripheral_clock_setup( void );
 
-void *memset(void *s, int c, size_t n)
-{
-    register uint8_t* p_dst = (uint8_t*)s;
-
-    while ( n-- )
-        *p_dst++ = c;
-
-    return s;
-}
-
-void _bss_init( void ) 
-{
-    // Copy initialized data from .sidata (Flash) to .data (RAM)
-    memcpy( &_sdata, &_etext, ( ( char* )&_edata - ( char* )&_sdata ) );
-    // Clear the .bss RAM section.
-    memset( &_sbss, 0x00, ( ( char* )&_ebss - ( char* )&_sbss ) );
-}
+#endif

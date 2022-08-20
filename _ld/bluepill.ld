@@ -31,6 +31,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
+ENTRY( briscits_reset_handler )
+
 __main_stack_size__     = 0x0400;
 __process_stack_size__  = 0x0400;
 
@@ -54,21 +56,26 @@ SECTIONS
         KEEP(*(.vectors))
     } > flash
 
-    constructors : ALIGN(4) SUBALIGN(4)
+    .preinit_array     :
     {
-        PROVIDE(__init_array_start = .);
-        KEEP(*(SORT(.init_array.*)))
-        KEEP(*(.init_array))
-        PROVIDE(__init_array_end = .);
-    } > flash
-
-    destructors : ALIGN(4) SUBALIGN(4)
+        PROVIDE_HIDDEN (__preinit_array_start = .);
+        KEEP (*(.preinit_array*))
+        PROVIDE_HIDDEN (__preinit_array_end = .);
+    } >flash
+    .init_array :
     {
-        PROVIDE(__fini_array_start = .);
-        KEEP(*(.fini_array))
-        KEEP(*(SORT(.fini_array.*)))
-        PROVIDE(__fini_array_end = .);
-    } > flash
+        PROVIDE_HIDDEN (__init_array_start = .);
+        KEEP (*(SORT(.init_array.*)))
+        KEEP (*(.init_array*))
+        PROVIDE_HIDDEN (__init_array_end = .);
+    } >flash
+    .fini_array :
+    {
+        PROVIDE_HIDDEN (__fini_array_start = .);
+        KEEP (*(SORT(.fini_array.*)))
+        KEEP (*(.fini_array*))
+        PROVIDE_HIDDEN (__fini_array_end = .);
+    } >flash
 
     .text : ALIGN(16) SUBALIGN(16)
     {
@@ -156,5 +163,8 @@ SECTIONS
 PROVIDE(end = .);
 _end            = .;
 
-__heap_start__   = _end;
+__bss_start__   = _sbss;
+__bss_end__     = _ebss;
+
+__heap_start__  = _end;
 __heap_end__    = __ram_end__;

@@ -13,3 +13,5 @@ SRCS_CC += $(SRC_CHIP_STM32F7)/system_stm32f7xx.c
 include ${SRC_CHIP_STM32F7}/../_src.mk
 
 include ${SRC_ROOT}/briscits/cpu/arm/cortex-m7/_src.mk
+
+ASFLAGS	+= -mlittle-endian -mthumb -mthumb-interwork -mcpu=$(MCU_CORE)
