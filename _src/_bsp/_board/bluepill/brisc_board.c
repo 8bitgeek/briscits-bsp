@@ -33,8 +33,11 @@ SOFTWARE.
 ******************************************************************************/
 #include <brisc_board.h>
 #include <brisc_thread.h>
+#include <usb-gadget0.h>
 
 gpio_t  gpio_led0 = { GPIOC, GPIO13 };
+
+static usbd_device *usbd_dev=NULL;
 
 void board_init( void ) 
 {
@@ -54,7 +57,6 @@ void board_init( void )
 	rcc_periph_clock_enable(RCC_USART2);
 	rcc_periph_clock_enable(RCC_WWDG);
 	rcc_periph_clock_enable(RCC_PWR);
-	rcc_periph_clock_enable(RCC_USB);
 	rcc_periph_clock_enable(RCC_TIM8);
 
 	/* Configur pins */
@@ -76,4 +78,35 @@ extern uint32_t board_clkfreq( void )
 {
 	/** @@NOTE Can we retrieve this from the rcc module? */
     return 72000000;
+}
+
+void board_usb_start( void )
+{
+	/*
+	 * Vile hack to reenumerate, physically _drag_ d+ low.
+	 * do NOT do this if you're board has proper usb pull up control!
+	 * (need at least 2.5us to trigger usb disconnect)
+	 */
+	gpio_set_mode( GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO12 );
+	gpio_clear(GPIOA, GPIO12);
+
+	for (unsigned int i = 0; i < 800000; i++) {
+		__asm__("nop");
+	}
+
+	rcc_periph_clock_enable(RCC_OTGFS);
+
+	usbd_dev = gadget0_init( &st_usbfs_v1_usb_driver, "0123456789");
+
+	gpio_clear(GPIOC, GPIO13);
+}
+
+void board_usb_service( void )
+{
+	gadget0_run( usbd_dev );
+}
+
+void board_stderr_putchar( uint8_t c )
+{
+	/* do stuff here */
 }

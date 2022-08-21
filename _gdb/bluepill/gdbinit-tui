@@ -10,5 +10,6 @@ target remote localhost:3333
 monitor arm semihosting enable
 load bluepill.elf
 file bluepill.elf
-tbreak feature_main
+# tbreak feature_main
+tbreak briscits_reset_handler
 continue

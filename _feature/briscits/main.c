@@ -63,7 +63,8 @@ extern int main(void)
 void* _sbrk ( int incr )
 {
 	/** trap stdlib linkages */
-	chip_reset();
+	// chip_reset();
+    for(;;) {}
 	return NULL;
 }
 

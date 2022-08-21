@@ -31,38 +31,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ******************************************************************************/
-#ifndef _BRISC_BOARD_H_
-#define _BRISC_BOARD_H_
+#include <brisc_board.h>
+#include <led.h>
 
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
+static led_t led;
 
-#include <libopencm3/cm3/common.h>
-#include <libopencm3/cm3/systick.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/usb/usbd.h>
-#include <cpu.h>
-
-#include <b_gpio.h>
-
-#ifdef __cplusplus
-extern "C"
+extern void feature_main(void* arg)
 {
-#endif
-
-gpio_t  gpio_led0;
-
-extern void     board_init( void );
-extern uint32_t board_clkfreq( void );
-extern void     board_stderr_putchar( uint8_t c );
-
-extern void     board_usb_start( void );
-extern void     board_usb_service( void );
-
-#ifdef __cplusplus
+	led_setup(&led,&gpio_led0,LED0_POLARITY);
+	led_blink(&led,LED_BLINK_FOREVER,FEATURE_DELAY);
+	
+	board_usb_start();
+	for( ;; )
+	{
+		led_service(&led);
+		board_usb_service();
+	}
 }
-#endif
-
-#endif

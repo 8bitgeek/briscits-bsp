@@ -52,6 +52,7 @@ extern "C"
 #endif
 
 gpio_t  gpio_led0;
+gpio_t  gpio_led1;
 
 extern void     board_init( void );
 extern uint32_t board_clkfreq( void );

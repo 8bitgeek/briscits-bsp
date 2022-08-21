@@ -34,7 +34,8 @@ SOFTWARE.
 #include <brisc_board.h>
 #include <brisc_thread.h>
 
-gpio_t  gpio_led0 = { GPIOC, GPIO13 };
+gpio_t  gpio_led0 = { GPIOC, GPIO14 };
+gpio_t  gpio_led1 = { GPIOC, GPIO15 };
 
 void board_init( void ) 
 {
@@ -58,10 +59,12 @@ void board_init( void )
 	rcc_periph_clock_enable(RCC_TIM8);
 
 	/* Configur pins */
-	gpio_set_mode( GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13 );
+	gpio_set_mode( GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO14 );
+	gpio_set_mode( GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO15 );
 
 	/* Set initial gpio pin states */
 	b_gpio_set(&gpio_led0);
+	b_gpio_set(&gpio_led1);
 
 	/* Configure the systick interrupt to generate systick interrupts at 1000 Hz */
 	systick_set_frequency(HZ, board_clkfreq());
