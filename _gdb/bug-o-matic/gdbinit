@@ -1,0 +1,6 @@
+target remote localhost:3333
+monitor arm semihosting enable
+load bug-o-matic.elf
+file bug-o-matic.elf
+break feature_main
+continue

@@ -1,0 +1,14 @@
+define hook-next
+  refresh
+end
+define hook-stop
+  refresh
+end
+layout split
+winheight src 24
+target remote localhost:3333
+monitor arm semihosting enable
+load bug-o-matic.elf
+file bug-o-matic.elf
+tbreak feature_main
+continue
