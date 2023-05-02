@@ -3,7 +3,7 @@
 
 
 
-## REPOSITORY URL: https://bitbucket.org/8bitgeek/briscits
+## REPOSITORY URL: https://bitbucket.org/8bitgeek/briscits-bsp
 
 
 
